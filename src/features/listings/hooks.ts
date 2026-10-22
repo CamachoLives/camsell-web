@@ -1,8 +1,8 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { listingsApi } from '@/features/listings/api'
 import { queryKeys } from '@/shared/api/queryClient'
-import type { ListingSearchParams } from '@/shared/api/types'
+import type { ListingSearchParams, ListingStatus } from '@/shared/api/types'
 
 export function useListingSearch(params: ListingSearchParams) {
   return useQuery({
@@ -35,5 +35,52 @@ export function useCatalogStats() {
     queryKey: queryKeys.catalogStats,
     queryFn: () => listingsApi.stats(),
     staleTime: 5 * 60_000,
+  })
+}
+
+export function useMyListings(page = 0) {
+  const params = { page, size: 12, sort: 'createdAt' as const }
+  return useQuery({
+    queryKey: queryKeys.myListings(params),
+    queryFn: () => listingsApi.mine(params),
+    placeholderData: (previous) => previous,
+  })
+}
+
+/** Cambiar el estado afecta tanto el panel propio como el catalogo publico. */
+export function useChangeListingStatus() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, status }: { id: number; status: ListingStatus }) =>
+      listingsApi.changeStatus(id, status),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['listings'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.catalogStats })
+    },
+  })
+}
+
+export function useDeleteListing() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: number) => listingsApi.remove(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['listings'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.catalogStats })
+    },
+  })
+}
+
+export function useSetFeatured() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, featured }: { id: number; featured: boolean }) =>
+      listingsApi.setFeatured(id, featured),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['listings'] })
+    },
   })
 }
