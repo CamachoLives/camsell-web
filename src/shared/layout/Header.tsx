@@ -1,7 +1,9 @@
-import { Menu, Newspaper, Plus, Search, Car, X } from 'lucide-react'
+import { Car, LayoutDashboard, Menu, Newspaper, Plus, Search, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 
+import { useAuthStore } from '@/features/auth/store'
+import { UserMenu } from '@/features/auth/UserMenu'
 import { cn } from '@/shared/lib/cn'
 import { Logo } from '@/shared/layout/Logo'
 import { ThemeToggle } from '@/shared/layout/ThemeToggle'
@@ -16,6 +18,7 @@ const NAV = [
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [search, setSearch] = useState('')
+  const user = useAuthStore((state) => state.user)
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -73,11 +76,15 @@ export function Header() {
 
         <div className="ml-auto flex items-center gap-1.5 lg:ml-0">
           <ThemeToggle />
-          <Link to="/ingresar" className="hidden sm:block">
-            <Button size="sm" variant="secondary">
-              Ingresar
-            </Button>
-          </Link>
+          {user ? (
+            <UserMenu />
+          ) : (
+            <Link to="/ingresar" className="hidden sm:block">
+              <Button size="sm" variant="secondary">
+                Ingresar
+              </Button>
+            </Link>
+          )}
           <button
             type="button"
             onClick={() => setMenuOpen((open) => !open)}
@@ -127,13 +134,35 @@ export function Header() {
                   </NavLink>
                 </li>
               ))}
-              <li className="pt-1">
-                <Link to="/ingresar">
-                  <Button fullWidth variant="secondary">
-                    Ingresar
-                  </Button>
-                </Link>
-              </li>
+              {user ? (
+                <li>
+                  <NavLink
+                    to="/cuenta"
+                    className={({ isActive }) =>
+                      cn(
+                        'flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium',
+                        isActive
+                          ? 'bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-200'
+                          : 'text-muted hover:bg-surface-sunken',
+                      )
+                    }
+                  >
+                    <LayoutDashboard className="size-4" aria-hidden />
+                    Mi cuenta
+                  </NavLink>
+                </li>
+              ) : (
+                <li className="flex flex-col gap-2 pt-1">
+                  <Link to="/ingresar">
+                    <Button fullWidth variant="secondary">
+                      Ingresar
+                    </Button>
+                  </Link>
+                  <Link to="/registro">
+                    <Button fullWidth>Crear cuenta</Button>
+                  </Link>
+                </li>
+              )}
             </ul>
           </nav>
         </div>
