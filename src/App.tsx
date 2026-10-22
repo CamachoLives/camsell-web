@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import { useAuthStore } from '@/features/auth/store'
 import { HomePage } from '@/pages/HomePage'
+import { ListingDetailPage } from '@/pages/ListingDetailPage'
 import { ListingsPage } from '@/pages/ListingsPage'
 import { LoginPage } from '@/pages/LoginPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
     children: [
       { path: '/', element: <HomePage /> },
       { path: '/vehiculos', element: <ListingsPage /> },
+      { path: '/vehiculos/:slug', element: <ListingDetailPage /> },
       { path: '/ingresar', element: <LoginPage /> },
       { path: '/registro', element: <RegisterPage /> },
       { path: '*', element: <NotFoundPage /> },
