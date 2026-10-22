@@ -3,7 +3,7 @@ import { Outlet, ScrollRestoration, useLocation } from 'react-router-dom'
 
 import { Footer } from '@/shared/layout/Footer'
 import { Header } from '@/shared/layout/Header'
-import { ToastViewport } from '@/shared/ui/toast'
+import { ToastViewport } from '@/shared/ui/ToastViewport'
 
 export function AppShell() {
   const { pathname } = useLocation()

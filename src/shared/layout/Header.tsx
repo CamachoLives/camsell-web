@@ -1,6 +1,6 @@
 import { Car, LayoutDashboard, Menu, Newspaper, Plus, Search, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 
 import { useAuthStore } from '@/features/auth/store'
 import { UserMenu } from '@/features/auth/UserMenu'
@@ -20,15 +20,10 @@ export function Header() {
   const [search, setSearch] = useState('')
   const user = useAuthStore((state) => state.user)
   const navigate = useNavigate()
-  const location = useLocation()
-
-  // Navegar cierra el menú móvil, para que no quede abierto sobre la vista nueva.
-  useEffect(() => {
-    setMenuOpen(false)
-  }, [location.pathname])
 
   function submitSearch(event: React.FormEvent) {
     event.preventDefault()
+    setMenuOpen(false)
     const term = search.trim()
     navigate(term ? `/vehiculos?text=${encodeURIComponent(term)}` : '/vehiculos')
   }
@@ -98,7 +93,15 @@ export function Header() {
       </div>
 
       {menuOpen ? (
-        <div className="bg-surface-raised animate-rise border-t border-surface md:hidden">
+        <div
+          className="bg-surface-raised animate-rise border-t border-surface md:hidden"
+          onClick={(event) => {
+            // Cualquier enlace del menú móvil lo cierra al navegar.
+            if ((event.target as HTMLElement).closest("a")) {
+              setMenuOpen(false)
+            }
+          }}
+        >
           <nav aria-label="Principal móvil" className="mx-auto max-w-7xl px-4 py-3">
             <form onSubmit={submitSearch} className="mb-3">
               <div className="relative flex items-center">

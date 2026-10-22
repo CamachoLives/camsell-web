@@ -5,11 +5,11 @@ import { useNavigate } from 'react-router-dom'
 
 import { listingsApi } from '@/features/listings/api'
 import {
-  DynamicField,
   toAttributeInputs,
   validateRequired,
   type DynamicValues,
-} from '@/features/parameters/DynamicField'
+} from '@/features/parameters/attributes'
+import { DynamicField } from '@/features/parameters/DynamicField'
 import { useBrands, usePublishableGroups } from '@/features/parameters/hooks'
 import { ApiError } from '@/shared/api/client'
 import type { SaveListingInput } from '@/shared/api/types'

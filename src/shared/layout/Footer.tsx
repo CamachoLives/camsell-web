@@ -31,6 +31,10 @@ const SECTIONS = [
   },
 ]
 
+// Se calcula una vez al cargar el módulo: llamar a Date durante el render hace
+// que el componente deje de ser puro.
+const CURRENT_YEAR = new Date().getFullYear()
+
 export function Footer() {
   return (
     <footer className="bg-surface-sunken mt-20 border-t border-surface">
@@ -73,7 +77,7 @@ export function Footer() {
         </div>
 
         <div className="text-muted mt-10 flex flex-col gap-2 border-t border-surface pt-6 text-xs sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Camsell. Proyecto de demostración.</p>
+          <p>© {CURRENT_YEAR} Camsell. Proyecto de demostración.</p>
           <p>
             Los vehículos y las notas son datos de ejemplo generados para probar la plataforma.
           </p>

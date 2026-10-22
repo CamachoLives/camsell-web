@@ -55,7 +55,7 @@ export function LoginPage() {
     }
   }
 
-  function useDemoAccount(email: string) {
+  function fillDemoAccount(email: string) {
     setValue('email', email, { shouldValidate: true })
     setValue('password', DEMO_PASSWORD, { shouldValidate: true })
   }
@@ -140,7 +140,7 @@ export function LoginPage() {
             <li key={account.email}>
               <button
                 type="button"
-                onClick={() => useDemoAccount(account.email)}
+                onClick={() => fillDemoAccount(account.email)}
                 className="hover:border-brand-400 hover:bg-surface-sunken w-full rounded-xl border border-surface px-3.5 py-2.5 text-left transition-colors"
               >
                 <span className="text-strong block text-sm font-medium">{account.label}</span>

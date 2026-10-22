@@ -5,10 +5,13 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { ProtectedRoute } from '@/features/auth/ProtectedRoute'
 import { useAuthStore } from '@/features/auth/store'
 import { AccountPage } from '@/pages/AccountPage'
+import { AdminPage } from '@/pages/AdminPage'
+import { ArticlePage } from '@/pages/ArticlePage'
 import { HomePage } from '@/pages/HomePage'
 import { ListingDetailPage } from '@/pages/ListingDetailPage'
 import { ListingsPage } from '@/pages/ListingsPage'
 import { LoginPage } from '@/pages/LoginPage'
+import { NewsPage } from '@/pages/NewsPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { PublishListingPage } from '@/pages/PublishListingPage'
 import { RegisterPage } from '@/pages/RegisterPage'
@@ -22,6 +25,8 @@ const router = createBrowserRouter([
       { path: '/', element: <HomePage /> },
       { path: '/vehiculos', element: <ListingsPage /> },
       { path: '/vehiculos/:slug', element: <ListingDetailPage /> },
+      { path: '/noticias', element: <NewsPage /> },
+      { path: '/noticias/:slug', element: <ArticlePage /> },
       { path: '/ingresar', element: <LoginPage /> },
       { path: '/registro', element: <RegisterPage /> },
       {
@@ -37,6 +42,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <AccountPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/admin',
+        element: (
+          <ProtectedRoute roles={['ADMIN']}>
+            <AdminPage />
           </ProtectedRoute>
         ),
       },

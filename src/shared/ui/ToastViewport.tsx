@@ -1,46 +1,7 @@
 import { AlertTriangle, CheckCircle2, Info, X } from 'lucide-react'
-import { useEffect } from 'react'
-import { create } from 'zustand'
 
 import { cn } from '@/shared/lib/cn'
-
-type ToastTone = 'success' | 'error' | 'info'
-
-interface Toast {
-  id: number
-  tone: ToastTone
-  message: string
-}
-
-interface ToastState {
-  toasts: Toast[]
-  push: (tone: ToastTone, message: string) => void
-  dismiss: (id: number) => void
-}
-
-let nextId = 1
-
-const useToastStore = create<ToastState>((set) => ({
-  toasts: [],
-  push: (tone, message) => {
-    const id = nextId++
-    set((state) => ({ toasts: [...state.toasts, { id, tone, message }] }))
-    window.setTimeout(() => {
-      set((state) => ({ toasts: state.toasts.filter((toast) => toast.id !== id) }))
-    }, 5000)
-  },
-  dismiss: (id) => set((state) => ({ toasts: state.toasts.filter((toast) => toast.id !== id) })),
-}))
-
-/** Avisos efímeros de resultado de una acción. */
-export function useToast() {
-  const push = useToastStore((state) => state.push)
-  return {
-    success: (message: string) => push('success', message),
-    error: (message: string) => push('error', message),
-    info: (message: string) => push('info', message),
-  }
-}
+import { useToastStore, type Toast, type ToastTone } from '@/shared/ui/toast'
 
 const TONES: Record<ToastTone, { className: string; icon: typeof Info }> = {
   success: {
@@ -54,8 +15,7 @@ const TONES: Record<ToastTone, { className: string; icon: typeof Info }> = {
     icon: AlertTriangle,
   },
   info: {
-    className:
-      'bg-surface-raised text-strong border-surface dark:bg-surface-raised',
+    className: 'bg-surface-raised text-strong border-surface',
     icon: Info,
   },
 }
@@ -79,14 +39,6 @@ export function ToastViewport() {
 
 function ToastRow({ toast, onDismiss }: { toast: Toast; onDismiss: () => void }) {
   const { className, icon: Icon } = TONES[toast.tone]
-
-  // Un aviso de error se mantiene hasta que la persona lo cierre.
-  useEffect(() => {
-    if (toast.tone !== 'error') {
-      return
-    }
-    return () => undefined
-  }, [toast.tone])
 
   return (
     <div

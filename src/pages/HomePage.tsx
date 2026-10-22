@@ -1,8 +1,19 @@
-import { ArrowRight, BadgeCheck, Car, Search, SlidersHorizontal, Star, Store } from 'lucide-react'
+import {
+  ArrowRight,
+  BadgeCheck,
+  Car,
+  Newspaper,
+  Search,
+  SlidersHorizontal,
+  Star,
+  Store,
+} from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { ListingCard, ListingCardSkeleton } from '@/features/listings/ListingCard'
 import { useCatalogStats, useFeaturedListings } from '@/features/listings/hooks'
+import { ArticleCard, ArticleCardSkeleton } from '@/features/news/ArticleCard'
+import { useFeaturedNews } from '@/features/news/hooks'
 import { useBrands } from '@/features/parameters/hooks'
 import type { CatalogStats } from '@/shared/api/types'
 import { formatNumber } from '@/shared/lib/format'
@@ -16,8 +27,42 @@ export function HomePage() {
       <Hero stats={stats} />
       <FeaturedListings />
       <BrandStrip />
+      <LatestNews />
       <ValueProps />
     </>
+  )
+}
+
+function LatestNews() {
+  const { data, isPending } = useFeaturedNews(3)
+
+  if (!isPending && (data?.length ?? 0) === 0) {
+    return null
+  }
+
+  return (
+    <section className="mx-auto max-w-7xl px-4 pt-16 lg:px-8">
+      <div className="mb-6 flex items-end justify-between gap-4">
+        <div>
+          <p className="text-brand-700 dark:text-brand-300 inline-flex items-center gap-1.5 text-sm font-semibold">
+            <Newspaper className="size-4" aria-hidden />
+            Camsell Informa
+          </p>
+          <h2 className="mt-1 text-2xl font-semibold">Para decidir con información</h2>
+        </div>
+        <Link to="/noticias" className="hidden shrink-0 sm:block">
+          <Button variant="ghost" size="sm" icon={<ArrowRight className="size-4" />}>
+            Ver todas
+          </Button>
+        </Link>
+      </div>
+
+      <div className="grid gap-5 md:grid-cols-3">
+        {isPending
+          ? Array.from({ length: 3 }, (_, index) => <ArticleCardSkeleton key={index} />)
+          : data?.map((article) => <ArticleCard key={article.id} article={article} />)}
+      </div>
+    </section>
   )
 }
 
