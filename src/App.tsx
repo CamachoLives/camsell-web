@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import { useAuthStore } from '@/features/auth/store'
 import { HomePage } from '@/pages/HomePage'
+import { ListingsPage } from '@/pages/ListingsPage'
 import { LoginPage } from '@/pages/LoginPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { RegisterPage } from '@/pages/RegisterPage'
@@ -15,6 +16,7 @@ const router = createBrowserRouter([
     element: <AppShell />,
     children: [
       { path: '/', element: <HomePage /> },
+      { path: '/vehiculos', element: <ListingsPage /> },
       { path: '/ingresar', element: <LoginPage /> },
       { path: '/registro', element: <RegisterPage /> },
       { path: '*', element: <NotFoundPage /> },

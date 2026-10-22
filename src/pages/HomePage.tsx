@@ -1,24 +1,89 @@
-import { useQuery } from '@tanstack/react-query'
-import { ArrowRight, BadgeCheck, Car, Search, SlidersHorizontal, Store } from 'lucide-react'
+import { ArrowRight, BadgeCheck, Car, Search, SlidersHorizontal, Star, Store } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-import { apiGet } from '@/shared/api/client'
-import { queryKeys } from '@/shared/api/queryClient'
+import { ListingCard, ListingCardSkeleton } from '@/features/listings/ListingCard'
+import { useCatalogStats, useFeaturedListings } from '@/features/listings/hooks'
+import { useBrands } from '@/features/parameters/hooks'
 import type { CatalogStats } from '@/shared/api/types'
 import { formatNumber } from '@/shared/lib/format'
 import { Button } from '@/shared/ui/Button'
 
 export function HomePage() {
-  const { data: stats } = useQuery({
-    queryKey: queryKeys.catalogStats,
-    queryFn: () => apiGet<CatalogStats>('/api/v1/stats/catalog'),
-  })
+  const { data: stats } = useCatalogStats()
 
   return (
     <>
       <Hero stats={stats} />
+      <FeaturedListings />
+      <BrandStrip />
       <ValueProps />
     </>
+  )
+}
+
+function FeaturedListings() {
+  const { data, isPending } = useFeaturedListings(6)
+
+  if (!isPending && (data?.length ?? 0) === 0) {
+    return null
+  }
+
+  return (
+    <section className="mx-auto max-w-7xl px-4 pt-16 lg:px-8">
+      <div className="mb-6 flex items-end justify-between gap-4">
+        <div>
+          <p className="text-brand-700 dark:text-brand-300 inline-flex items-center gap-1.5 text-sm font-semibold">
+            <Star className="size-4" aria-hidden />
+            Destacados
+          </p>
+          <h2 className="mt-1 text-2xl font-semibold">Vehículos que vale la pena mirar</h2>
+        </div>
+        <Link to="/vehiculos" className="hidden shrink-0 sm:block">
+          <Button variant="ghost" size="sm" icon={<ArrowRight className="size-4" />}>
+            Ver todos
+          </Button>
+        </Link>
+      </div>
+
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {isPending
+          ? Array.from({ length: 3 }, (_, index) => <ListingCardSkeleton key={index} />)
+          : data?.map((listing) => <ListingCard key={listing.id} listing={listing} />)}
+      </div>
+
+      <Link to="/vehiculos" className="mt-6 block sm:hidden">
+        <Button fullWidth variant="secondary">
+          Ver todo el catálogo
+        </Button>
+      </Link>
+    </section>
+  )
+}
+
+function BrandStrip() {
+  const { data: brands } = useBrands(false)
+
+  if (!brands || brands.length === 0) {
+    return null
+  }
+
+  return (
+    <section className="mx-auto max-w-7xl px-4 pt-16 lg:px-8">
+      <h2 className="text-muted mb-4 text-sm font-semibold tracking-wide uppercase">
+        Explora por marca
+      </h2>
+      <div className="flex flex-wrap gap-2">
+        {brands.map((brand) => (
+          <Link
+            key={brand.id}
+            to={`/vehiculos?brandId=${brand.id}`}
+            className="surface-card hover:border-brand-400 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors"
+          >
+            {brand.name}
+          </Link>
+        ))}
+      </div>
+    </section>
   )
 }
 
