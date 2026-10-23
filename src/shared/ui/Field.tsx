@@ -10,7 +10,8 @@ import { cn } from '@/shared/lib/cn'
 
 const CONTROL_BASE =
   'w-full rounded-xl border border-surface bg-surface-raised px-3.5 text-sm text-strong ' +
-  'placeholder:text-muted/70 transition-colors focus:border-brand-500 ' +
+  'placeholder:text-muted/60 transition-[border-color,box-shadow] duration-200 ' +
+  'hover:border-surface-strong focus:border-brand-500 ' +
   'disabled:cursor-not-allowed disabled:opacity-60'
 
 interface WrapperProps {
