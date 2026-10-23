@@ -58,7 +58,7 @@ export function AdminPage() {
           <Settings className="size-4" aria-hidden />
           Administración
         </p>
-        <h1 className="mt-1 text-3xl font-semibold">Configuración de la plataforma</h1>
+        <h1 className="mt-1.5 text-3xl font-semibold sm:text-4xl">Configuración de la plataforma</h1>
         <p className="text-muted mt-1.5">
           Lo que cambies aquí se refleja de inmediato en los filtros de búsqueda, en el formulario
           de publicación y en las fichas técnicas.
@@ -145,7 +145,7 @@ function ParametersTab() {
     return <ErrorState error={error} onRetry={() => void refetch()} />
   }
   if (isPending) {
-    return <Skeleton className="h-72 w-full rounded-2xl" />
+    return <Skeleton className="h-72 w-full rounded-panel" />
   }
 
   return (
@@ -161,7 +161,7 @@ function ParametersTab() {
 
       <ul className="flex flex-col gap-3">
         {groups.map((group) => (
-          <li key={group.code} className="surface-card overflow-hidden rounded-2xl">
+          <li key={group.code} className="surface-card overflow-hidden rounded-panel">
             <div className="flex flex-wrap items-start justify-between gap-3 p-5">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
@@ -535,14 +535,14 @@ function BrandsTab() {
     return <ErrorState error={error} onRetry={() => void refetch()} />
   }
   if (isPending) {
-    return <Skeleton className="h-72 w-full rounded-2xl" />
+    return <Skeleton className="h-72 w-full rounded-panel" />
   }
 
   return (
     <>
       <form
         onSubmit={createBrand}
-        className="surface-card mb-5 flex flex-wrap items-end gap-2.5 rounded-2xl p-5"
+        className="surface-card mb-5 flex flex-wrap items-end gap-2.5 rounded-panel p-5"
       >
         <TextField
           wrapperClassName="flex-1 min-w-40"
@@ -623,7 +623,7 @@ function BrandRow({
   }
 
   return (
-    <li className="surface-card overflow-hidden rounded-2xl">
+    <li className="surface-card overflow-hidden rounded-panel">
       <div className="flex flex-wrap items-center justify-between gap-3 p-5">
         <div>
           <h3 className="flex items-center gap-2 text-base font-semibold">
@@ -753,7 +753,7 @@ function NewsTab() {
     return <ErrorState error={error} onRetry={() => void refetch()} />
   }
   if (isPending) {
-    return <Skeleton className="h-72 w-full rounded-2xl" />
+    return <Skeleton className="h-72 w-full rounded-panel" />
   }
 
   return (
@@ -778,7 +778,7 @@ function NewsTab() {
             return (
               <li
                 key={article.id}
-                className="surface-card flex flex-wrap items-center justify-between gap-3 rounded-2xl p-5"
+                className="surface-card flex flex-wrap items-center justify-between gap-3 rounded-panel p-5"
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">

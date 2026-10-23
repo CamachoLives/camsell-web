@@ -78,7 +78,7 @@ export function RegisterPage() {
 
   return (
     <section className="mx-auto max-w-xl px-4 py-14 lg:px-8">
-      <div className="surface-card rounded-2xl p-7 sm:p-9">
+      <div className="surface-card rounded-panel p-7 sm:p-9">
         <h1 className="text-2xl font-semibold">Crea tu cuenta</h1>
         <p className="text-muted mt-1.5 text-sm">
           Es gratis. Publicar y ofertar no tiene costo ni comisión.

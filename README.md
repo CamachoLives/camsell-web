@@ -136,6 +136,54 @@ src/
     └── hooks/          Utilidades de React
 ```
 
+### Rendimiento
+
+| Qué | Antes | Después |
+|---|---|---|
+| Carga inicial (gzip) | 189 kB | **144 kB** |
+| Archivos en la primera visita | 1 bundle | **3** |
+| Peso de una vista posterior | — | **2–7 kB** |
+| Fragmentos totales | 1 | **34** |
+
+- **División por ruta.** Cada vista es una importación diferida con su propio
+  límite de suspensión. Antes, quien abría la portada descargaba también la
+  consola de administración y el formulario de publicación.
+- **Precarga por intención.** Posarse sobre un enlace es una señal fiable de que
+  se va a hacer clic, así que `SmartLink` descarga el código del destino en ese
+  momento — y también al enfocar con el teclado, para no castigar a quien no usa
+  ratón. El catálogo se precarga cuando el navegador está desocupado, vía
+  `requestIdleCallback`.
+- **Imágenes sin saltos.** `Image` reserva la proporción desde el primer
+  pintado, difiere la carga salvo en lo que ya está en pantalla, decodifica de
+  forma asíncrona para no bloquear el desplazamiento, y cae a un estado claro
+  cuando la URL falla.
+- **Relleno con la silueta correcta.** Mientras llega el código de una vista se
+  muestra una estructura de página, no un spinner centrado: el cambio se
+  percibe como la página apareciendo.
+
+### Diseño
+
+El tono es técnico y contenido, no decorativo.
+
+- **Color en OKLCH.** Los pasos de la paleta son perceptualmente parejos, lo que
+  evita que el tono «salte» entre el 400 y el 500 como ocurre al interpolar en
+  RGB. El ámbar está reservado para lo accionable.
+- **Tres tipografías con un papel claro.** Space Grotesk en titulares, Inter en
+  texto y JetBrains Mono con numerales tabulares en precios, kilometrajes y
+  referencias: las cifras dejan de «bailar» al cambiar de valor y el contenido
+  se lee como datos.
+- **Sistema de superficies** — tarjeta, plana, cristal y una con borde en
+  degradado compuesta con recorte de caja, sin pseudo-elemento ni envoltorio.
+- **Cristal donde tiene sentido.** Solo en lo que flota sobre contenido que se
+  desplaza: el encabezado, la barra de resultados y la paleta de comandos.
+- **Movimiento con intención.** Entrada en cascada en las rejillas cuyo retardo
+  se toma de una variable CSS según la posición de cada tarjeta, elevación de
+  tres píxeles al pasar el cursor, y un hundimiento mínimo al presionar un
+  botón. Nada de esto es esencial para usar el sitio: con
+  `prefers-reduced-motion` se anula todo.
+- **Paleta de comandos (Ctrl/Cmd + K)** con búsqueda de vehículos, marcas,
+  notas y secciones, navegable por completo con el teclado.
+
 ### Decisiones que vale la pena conocer
 
 - **Los filtros viven en la URL.** Una búsqueda se puede compartir, guardar en

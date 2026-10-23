@@ -30,14 +30,14 @@ export function EmptyState({ title, description, icon, action, className }: Empt
   return (
     <div
       className={cn(
-        'surface-card flex flex-col items-center gap-3 rounded-2xl px-6 py-14 text-center',
+        'surface-card flex flex-col items-center gap-3 rounded-panel px-6 py-16 text-center',
         className,
       )}
     >
-      <span className="bg-surface-sunken text-muted grid size-12 place-items-center rounded-full">
+      <span className="bg-surface-sunken text-muted grid size-14 place-items-center rounded-2xl">
         {icon ?? <Inbox className="size-5" aria-hidden />}
       </span>
-      <h3 className="text-base font-semibold">{title}</h3>
+      <h3 className="text-lg font-semibold">{title}</h3>
       {description ? <p className="text-muted max-w-md text-sm">{description}</p> : null}
       {action}
     </div>
@@ -66,14 +66,14 @@ export function ErrorState({ error, onRetry, className }: ErrorStateProps) {
   return (
     <div
       className={cn(
-        'surface-card flex flex-col items-center gap-3 rounded-2xl px-6 py-14 text-center',
+        'surface-card flex flex-col items-center gap-3 rounded-panel px-6 py-16 text-center',
         className,
       )}
     >
-      <span className="grid size-12 place-items-center rounded-full bg-red-50 text-red-600 dark:bg-red-950/60 dark:text-red-400">
+      <span className="grid size-14 place-items-center rounded-2xl bg-red-50 text-red-600 dark:bg-red-950/60 dark:text-red-400">
         <AlertTriangle className="size-5" aria-hidden />
       </span>
-      <h3 className="text-base font-semibold">{title}</h3>
+      <h3 className="text-lg font-semibold">{title}</h3>
       <p className="text-muted max-w-md text-sm">{description}</p>
       {onRetry ? (
         <Button variant="secondary" size="sm" icon={<RefreshCw className="size-4" />} onClick={onRetry}>

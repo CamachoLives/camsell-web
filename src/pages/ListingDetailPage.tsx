@@ -24,7 +24,7 @@ import { useParameterDictionary } from '@/features/parameters/hooks'
 import { ApiError } from '@/shared/api/client'
 import { cn } from '@/shared/lib/cn'
 import { formatMileage, formatPrice, formatRelative, initials } from '@/shared/lib/format'
-import { Badge } from '@/shared/ui/Badge'
+import { Badge, StatusDot } from '@/shared/ui/Badge'
 import { Button } from '@/shared/ui/Button'
 import { ErrorState, Skeleton } from '@/shared/ui/Feedback'
 import { useToast } from '@/shared/ui/toast'
@@ -129,17 +129,17 @@ export function ListingDetailPage() {
 
           <header className="mt-7">
             <div className="mb-2.5 flex flex-wrap items-center gap-2">
-              <Badge tone={status.tone}>{status.label}</Badge>
+              <Badge tone={status.tone} icon={listing.status === 'PUBLISHED' ? <StatusDot tone="success" /> : undefined}>{status.label}</Badge>
               {listing.featured ? (
                 <Badge tone="brand" icon={<Star className="size-3" aria-hidden />}>
                   Destacado
                 </Badge>
               ) : null}
               {listing.negotiable ? <Badge tone="info">Precio negociable</Badge> : null}
-              <span className="text-muted ml-auto font-mono text-xs">{listing.reference}</span>
+              <span className="numeric text-muted ml-auto text-xs">{listing.reference}</span>
             </div>
 
-            <h1 className="text-3xl font-semibold">{listing.title}</h1>
+            <h1 className="text-3xl font-semibold sm:text-4xl">{listing.title}</h1>
 
             <dl className="text-muted mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
               <Fact icon={<Calendar className="size-4" aria-hidden />} label="Año">
@@ -169,9 +169,9 @@ export function ListingDetailPage() {
         </div>
 
         <aside className="lg:sticky lg:top-24 lg:h-fit">
-          <div className="surface-card rounded-2xl p-6">
-            <p className="text-muted text-sm">Precio</p>
-            <p className="text-strong mt-0.5 text-3xl font-bold">
+          <div className="surface-edge rounded-panel p-6">
+            <p className="text-muted text-xs font-semibold tracking-widest uppercase">Precio</p>
+            <p className="numeric text-strong mt-1 text-3xl font-semibold">
               {formatPrice(listing.price, listing.currency)}
             </p>
 
@@ -237,7 +237,7 @@ export function ListingDetailPage() {
             ) : null}
           </div>
 
-          <div className="surface-card mt-4 rounded-2xl p-6">
+          <div className="surface-card mt-4 rounded-panel p-6">
             <h2 className="text-muted mb-3.5 text-sm font-semibold">Vendedor</h2>
             <div className="flex items-center gap-3">
               <span className="bg-brand-600 grid size-11 shrink-0 place-items-center rounded-full text-sm font-semibold text-white">

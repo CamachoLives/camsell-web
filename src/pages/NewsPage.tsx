@@ -55,7 +55,7 @@ export function NewsPage() {
           <Newspaper className="size-4" aria-hidden />
           Camsell Informa
         </p>
-        <h1 className="mt-1 text-3xl font-semibold">Novedades del mercado automotor</h1>
+        <h1 className="mt-1.5 text-3xl font-semibold sm:text-4xl">Novedades del mercado automotor</h1>
         <p className="text-muted mt-1.5">
           Lanzamientos, pruebas de manejo, guías de compra y lo que mueve los precios.
         </p>

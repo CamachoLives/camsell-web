@@ -66,7 +66,7 @@ export function Modal({
         aria-labelledby="modal-title"
         className={cn(
           'bg-surface-raised animate-rise relative flex w-full flex-col',
-          'max-h-[92dvh] rounded-t-2xl border border-surface shadow-2xl sm:rounded-2xl',
+          'max-h-[92dvh] rounded-t-panel border border-surface shadow-2xl sm:rounded-panel',
           SIZES[size],
         )}
       >

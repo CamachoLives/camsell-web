@@ -1,17 +1,19 @@
-import { Car, Search, SlidersHorizontal, X } from 'lucide-react'
+import { Car, LayoutGrid, Rows3, Search, SlidersHorizontal, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 
 import { FilterPanel } from '@/features/listings/FilterPanel'
-import { ListingCard, ListingCardSkeleton } from '@/features/listings/ListingCard'
 import { useListingSearch } from '@/features/listings/hooks'
+import { ListingCard, ListingCardSkeleton } from '@/features/listings/ListingCard'
 import { useListingFilters } from '@/features/listings/useListingFilters'
 import { useParameterDictionary } from '@/features/parameters/hooks'
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue'
+import { cn } from '@/shared/lib/cn'
+import { formatNumber } from '@/shared/lib/format'
 import { Badge } from '@/shared/ui/Badge'
 import { Button } from '@/shared/ui/Button'
 import { EmptyState, ErrorState } from '@/shared/ui/Feedback'
 import { Pagination } from '@/shared/ui/Pagination'
+import { SmartLink } from '@/shared/ui/SmartLink'
 
 const SORTS = [
   { value: '', label: 'Más recientes' },
@@ -21,11 +23,24 @@ const SORTS = [
   { value: 'viewCount', label: 'Más vistos' },
 ]
 
+type ViewMode = 'grid' | 'row'
+const VIEW_KEY = 'camsell.catalogView'
+
+/** La preferencia de vista se recuerda: es una decisión personal, no de sesión. */
+function readStoredView(): ViewMode {
+  try {
+    return localStorage.getItem(VIEW_KEY) === 'row' ? 'row' : 'grid'
+  } catch {
+    return 'grid'
+  }
+}
+
 export function ListingsPage() {
   const filters = useListingFilters()
   const [searchTerm, setSearchTerm] = useState(filters.params.text ?? '')
   const debouncedTerm = useDebouncedValue(searchTerm)
   const [panelOpen, setPanelOpen] = useState(false)
+  const [view, setView] = useState<ViewMode>(readStoredView)
 
   // El texto se escribe libre y se aplica con retardo, para no lanzar una
   // consulta por cada tecla.
@@ -35,20 +50,29 @@ export function ListingsPage() {
     }
   }, [debouncedTerm]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  function changeView(next: ViewMode) {
+    setView(next)
+    try {
+      localStorage.setItem(VIEW_KEY, next)
+    } catch {
+      // Sin almacenamiento la preferencia dura lo que dure la pestaña.
+    }
+  }
+
   const { data, isPending, isError, error, refetch, isPlaceholderData } = useListingSearch(
     filters.params,
   )
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 py-9 lg:px-8">
       <header className="mb-7">
-        <h1 className="text-3xl font-semibold">Vehículos en venta</h1>
-        <p className="text-muted mt-1.5">
+        <h1 className="text-3xl font-semibold sm:text-4xl">Vehículos en venta</h1>
+        <p className="text-muted mt-2">
           Los filtros se construyen desde el catálogo de parámetros de la plataforma.
         </p>
       </header>
 
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row">
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row">
         <div className="relative flex flex-1 items-center">
           <Search className="text-muted pointer-events-none absolute left-3.5 size-4" aria-hidden />
           <label className="sr-only" htmlFor="catalog-search">
@@ -60,25 +84,9 @@ export function ListingsPage() {
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
             placeholder="Toyota, Hilux, CAMS-D0001…"
-            className="bg-surface-raised text-strong placeholder:text-muted/70 focus:border-brand-500 h-11 w-full rounded-xl border border-surface pr-3 pl-10 text-sm transition-colors"
+            className="bg-surface-raised text-strong placeholder:text-muted/60 hover:border-surface-strong focus:border-brand-500 h-11 w-full rounded-xl border border-surface pr-3 pl-10 text-sm transition-colors"
           />
         </div>
-
-        <label className="sr-only" htmlFor="catalog-sort">
-          Ordenar resultados
-        </label>
-        <select
-          id="catalog-sort"
-          value={filters.params.sort ?? ''}
-          onChange={(event) => filters.setSort(event.target.value)}
-          className="bg-surface-raised text-strong h-11 cursor-pointer rounded-xl border border-surface px-3.5 text-sm sm:w-56"
-        >
-          {SORTS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
 
         <Button
           variant="secondary"
@@ -92,12 +100,68 @@ export function ListingsPage() {
 
       <ActiveChips filters={filters} />
 
-      <div className="grid gap-8 lg:grid-cols-[17rem_1fr]">
-        <aside className="surface-card hidden h-fit rounded-2xl p-5 lg:sticky lg:top-24 lg:block">
+      <div className="grid gap-8 lg:grid-cols-[17.5rem_1fr]">
+        <aside className="surface-card hidden h-fit rounded-panel p-5 lg:sticky lg:top-24 lg:block lg:max-h-[calc(100dvh-7rem)] lg:overflow-y-auto">
           <FilterPanel filters={filters} />
         </aside>
 
         <section aria-live="polite" aria-busy={isPending}>
+          {/* Barra de resultados adherida: el conteo, el orden y la vista
+              siguen al alcance mientras se recorre una lista larga. */}
+          <div className="surface-glass sticky top-[4.25rem] z-20 mb-5 flex items-center gap-3 rounded-xl px-3.5 py-2.5">
+            <p className="text-muted text-sm">
+              {isPending ? (
+                'Buscando…'
+              ) : (
+                <>
+                  <span className="numeric text-strong font-medium">
+                    {formatNumber(data?.totalElements ?? 0)}
+                  </span>{' '}
+                  {data?.totalElements === 1 ? 'resultado' : 'resultados'}
+                </>
+              )}
+            </p>
+
+            <div className="ml-auto flex items-center gap-2">
+              <label className="sr-only" htmlFor="catalog-sort">
+                Ordenar resultados
+              </label>
+              <select
+                id="catalog-sort"
+                value={filters.params.sort ?? ''}
+                onChange={(event) => filters.setSort(event.target.value)}
+                className="text-base h-9 cursor-pointer rounded-lg border border-surface bg-surface-raised px-2.5 text-xs"
+              >
+                {SORTS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+
+              <div
+                role="group"
+                aria-label="Forma de ver los resultados"
+                className="hidden rounded-lg border border-surface bg-surface-raised p-0.5 sm:flex"
+              >
+                <ViewButton
+                  active={view === 'grid'}
+                  label="Ver en rejilla"
+                  onClick={() => changeView('grid')}
+                >
+                  <LayoutGrid className="size-4" aria-hidden />
+                </ViewButton>
+                <ViewButton
+                  active={view === 'row'}
+                  label="Ver en lista"
+                  onClick={() => changeView('row')}
+                >
+                  <Rows3 className="size-4" aria-hidden />
+                </ViewButton>
+              </div>
+            </div>
+          </div>
+
           {isError ? (
             <ErrorState error={error} onRetry={() => void refetch()} />
           ) : isPending ? (
@@ -117,27 +181,41 @@ export function ListingsPage() {
                     Limpiar filtros
                   </Button>
                 ) : (
-                  <Link to="/publicar">
+                  <SmartLink to="/publicar" prefetchPage="publish">
                     <Button size="sm">Publicar el primero</Button>
-                  </Link>
+                  </SmartLink>
                 )
               }
             />
           ) : (
             <>
+              {/* Se atenúa mientras llega la página siguiente, en lugar de
+                  vaciarse y perder el contexto de lectura. */}
               <div
-                className={cnOpacity(isPlaceholderData)}
-                // El bloque se atenúa mientras llega la página siguiente, en
-                // lugar de vaciarse y perder el contexto de lectura.
+                className={cn(
+                  'transition-opacity duration-200',
+                  isPlaceholderData && 'opacity-55',
+                )}
               >
-                <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                  {data.content.map((listing) => (
-                    <ListingCard key={listing.id} listing={listing} />
+                <div
+                  className={cn(
+                    'grid gap-5',
+                    view === 'grid' ? 'sm:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1',
+                  )}
+                >
+                  {data.content.map((listing, index) => (
+                    <ListingCard
+                      key={listing.id}
+                      listing={listing}
+                      index={index}
+                      layout={view}
+                      priority={index < 3}
+                    />
                   ))}
                 </div>
               </div>
 
-              <div className="mt-9">
+              <div className="mt-10">
                 <Pagination
                   page={data.page}
                   totalPages={data.totalPages}
@@ -175,13 +253,40 @@ export function ListingsPage() {
             </div>
             <footer className="border-t border-surface px-5 py-4">
               <Button fullWidth onClick={() => setPanelOpen(false)}>
-                Ver resultados
+                Ver {formatNumber(data?.totalElements ?? 0)} resultados
               </Button>
             </footer>
           </div>
         </div>
       ) : null}
     </div>
+  )
+}
+
+function ViewButton({
+  active,
+  label,
+  onClick,
+  children,
+}: {
+  active: boolean
+  label: string
+  onClick: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      aria-pressed={active}
+      onClick={onClick}
+      className={cn(
+        'grid size-8 place-items-center rounded-md transition-colors',
+        active ? 'bg-brand-500/15 text-brand-600 dark:text-brand-300' : 'text-muted hover:text-strong',
+      )}
+    >
+      {children}
+    </button>
   )
 }
 
@@ -195,7 +300,7 @@ function ActiveChips({ filters }: { filters: ReturnType<typeof useListingFilters
   }
 
   return (
-    <div className="mb-6 flex flex-wrap items-center gap-2">
+    <div className="mb-5 flex flex-wrap items-center gap-2">
       {entries.flatMap(([groupCode, values]) =>
         values.map((value) => (
           <button
@@ -206,17 +311,20 @@ function ActiveChips({ filters }: { filters: ReturnType<typeof useListingFilters
             aria-label={`Quitar filtro ${dictionary.valueLabel(groupCode, value)}`}
           >
             <Badge tone="brand" className="pr-1.5">
-              <span className="text-muted/90 mr-0.5">{dictionary.groupLabel(groupCode)}:</span>
+              <span className="opacity-70">{dictionary.groupLabel(groupCode)}:</span>
               {dictionary.valueLabel(groupCode, value)}
               <X className="ml-0.5 size-3" aria-hidden />
             </Badge>
           </button>
         )),
       )}
+      <button
+        type="button"
+        onClick={filters.reset}
+        className="text-muted hover:text-strong ml-1 text-xs font-medium underline-offset-2 hover:underline"
+      >
+        Limpiar todo
+      </button>
     </div>
   )
-}
-
-function cnOpacity(isPlaceholder: boolean): string {
-  return isPlaceholder ? 'opacity-60 transition-opacity' : 'transition-opacity'
 }

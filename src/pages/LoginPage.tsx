@@ -62,7 +62,7 @@ export function LoginPage() {
 
   return (
     <section className="mx-auto grid max-w-5xl gap-8 px-4 py-14 lg:grid-cols-[1fr_20rem] lg:px-8">
-      <div className="surface-card rounded-2xl p-7 sm:p-9">
+      <div className="surface-card rounded-panel p-7 sm:p-9">
         <h1 className="text-2xl font-semibold">Ingresa a tu cuenta</h1>
         <p className="text-muted mt-1.5 text-sm">
           Administra tus publicaciones, responde ofertas y guarda los vehículos que te interesan.
@@ -127,7 +127,7 @@ export function LoginPage() {
         </p>
       </div>
 
-      <aside className="surface-card h-fit rounded-2xl p-6">
+      <aside className="surface-card h-fit rounded-panel p-6">
         <h2 className="text-sm font-semibold">Cuentas de demostración</h2>
         <p className="text-muted mt-1 text-xs">
           Toca una para llenar el formulario. Todas usan la clave{' '}

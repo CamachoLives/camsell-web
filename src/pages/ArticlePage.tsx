@@ -24,7 +24,7 @@ export function ArticlePage() {
         <Skeleton className="h-4 w-32" />
         <Skeleton className="h-10 w-full" />
         <Skeleton className="h-4 w-48" />
-        <Skeleton className="aspect-[16/9] w-full rounded-2xl" />
+        <Skeleton className="aspect-[16/9] w-full rounded-panel" />
         <Skeleton className="h-60 w-full" />
       </article>
     )
@@ -112,7 +112,7 @@ export function ArticlePage() {
           <img
             src={article.coverImageUrl}
             alt={article.title}
-            className="bg-surface-sunken mt-7 aspect-[16/9] w-full rounded-2xl object-cover"
+            className="bg-surface-sunken mt-7 aspect-[16/9] w-full rounded-panel object-cover"
           />
         ) : null}
 

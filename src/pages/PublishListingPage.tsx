@@ -182,7 +182,7 @@ export function PublishListingPage() {
       <div className="mx-auto flex max-w-3xl flex-col gap-4 px-4 py-12">
         <Skeleton className="h-9 w-64" />
         <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-72 w-full rounded-2xl" />
+        <Skeleton className="h-72 w-full rounded-panel" />
       </div>
     )
   }
@@ -234,7 +234,7 @@ export function PublishListingPage() {
         ))}
       </ol>
 
-      <div className="surface-card rounded-2xl p-6 sm:p-8">
+      <div className="surface-card rounded-panel p-6 sm:p-8">
         {formError ? (
           <div className="mb-5">
             <InlineAlert>{formError}</InlineAlert>

@@ -66,7 +66,7 @@ export function AccountPage() {
     <div className="mx-auto max-w-6xl px-4 py-10 lg:px-8">
       <header className="mb-7 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-semibold">Mi cuenta</h1>
+          <h1 className="text-3xl font-semibold sm:text-4xl">Mi cuenta</h1>
           <p className="text-muted mt-1.5">
             Hola {user?.fullName.split(' ')[0]}. Administra tus publicaciones y tus negociaciones.
           </p>
@@ -252,7 +252,7 @@ function OfferRow({ offer, children }: { offer: Offer; children?: React.ReactNod
   const badge = OFFER_BADGE[offer.status]
 
   return (
-    <li className="surface-card flex flex-col gap-3 rounded-2xl p-5">
+    <li className="surface-card flex flex-col gap-3 rounded-panel p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <Link
@@ -265,7 +265,7 @@ function OfferRow({ offer, children }: { offer: Offer; children?: React.ReactNod
         </div>
         <div className="flex items-center gap-2">
           <Badge tone={badge.tone}>{badge.label}</Badge>
-          <p className="text-strong text-lg font-bold">
+          <p className="numeric text-strong text-lg font-semibold">
             {formatPrice(offer.amount, offer.currency)}
           </p>
         </div>
@@ -435,7 +435,7 @@ function OffersSkeleton() {
   return (
     <div className="flex flex-col gap-4">
       {Array.from({ length: 3 }, (_, index) => (
-        <Skeleton key={index} className="h-32 w-full rounded-2xl" />
+        <Skeleton key={index} className="h-32 w-full rounded-panel" />
       ))}
     </div>
   )
@@ -533,7 +533,7 @@ function ProfileTab() {
 
   return (
     <div className="grid gap-5 lg:grid-cols-2">
-      <form onSubmit={saveProfile} className="surface-card flex flex-col gap-4 rounded-2xl p-6">
+      <form onSubmit={saveProfile} className="surface-card flex flex-col gap-4 rounded-panel p-6">
         <h2 className="text-lg font-semibold">Datos personales</h2>
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
@@ -557,7 +557,7 @@ function ProfileTab() {
         </Button>
       </form>
 
-      <form onSubmit={savePassword} className="surface-card flex flex-col gap-4 rounded-2xl p-6">
+      <form onSubmit={savePassword} className="surface-card flex flex-col gap-4 rounded-panel p-6">
         <h2 className="text-lg font-semibold">Cambiar clave</h2>
 
         <TextField

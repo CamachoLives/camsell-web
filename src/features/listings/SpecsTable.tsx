@@ -2,15 +2,15 @@ import { useMemo } from 'react'
 
 import { useParameterDictionary, useParameterGroups } from '@/features/parameters/hooks'
 import type { ListingAttribute, ListingDetail } from '@/shared/api/types'
-import { formatMileage, formatNumber } from '@/shared/lib/format'
+import { formatNumber } from '@/shared/lib/format'
 
 interface SpecsTableProps {
   listing: ListingDetail
 }
 
 /**
- * Ficha tecnica construida desde el esquema de parametros: respeta el orden y
- * las etiquetas que definio el administrador, y los grupos multivalor se
+ * Ficha técnica construida desde el esquema de parámetros: respeta el orden y
+ * las etiquetas que definió el administrador, y los grupos multivalor se
  * agrupan en una sola fila.
  */
 export function SpecsTable({ listing }: SpecsTableProps) {
@@ -45,52 +45,71 @@ export function SpecsTable({ listing }: SpecsTableProps) {
     return ordered
   }, [listing.attributes, groups, dictionary])
 
-  return (
-    <div className="flex flex-col gap-6">
-      <dl className="grid gap-x-8 gap-y-3.5 sm:grid-cols-2">
-        <Row label="Marca" value={listing.brandName} />
-        <Row label="Modelo" value={listing.modelName} />
-        <Row label="Año" value={String(listing.year)} />
-        <Row label="Kilometraje" value={formatMileage(listing.mileageKm)} />
-        {listing.cityCode ? (
-          <Row label="Ciudad" value={dictionary.valueLabel('CITY', listing.cityCode)} />
-        ) : null}
-        <Row label="Referencia" value={listing.reference} mono />
-        <Row label="Visitas" value={formatNumber(listing.viewCount)} />
+  const specs = rows.filter((row) => row.code !== 'CITY' && row.code !== 'FEATURE')
+  const features = rows.find((row) => row.code === 'FEATURE')
 
-        {rows
-          .filter((row) => row.code !== 'CITY' && row.code !== 'FEATURE')
-          .map((row) => (
-            <Row key={row.code} label={row.label} value={row.values.join(', ')} />
-          ))}
+  return (
+    <div className="flex flex-col gap-8">
+      {/*
+        Celdas en rejilla en lugar de filas de tabla: cada dato queda como una
+        unidad legible de un vistazo, y en móvil se reordena en una columna sin
+        que el valor se separe de su etiqueta.
+      */}
+      <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-card border border-surface bg-[var(--surface-border)] sm:grid-cols-3 lg:grid-cols-4">
+        <Cell label="Marca" value={listing.brandName} />
+        <Cell label="Modelo" value={listing.modelName} />
+        <Cell label="Año" value={String(listing.year)} numeric />
+        <Cell label="Kilometraje" value={`${formatNumber(listing.mileageKm)} km`} numeric />
+        {listing.cityCode ? (
+          <Cell label="Ciudad" value={dictionary.valueLabel('CITY', listing.cityCode)} />
+        ) : null}
+        {specs.map((row) => (
+          <Cell key={row.code} label={row.label} value={row.values.join(', ')} />
+        ))}
+        <Cell label="Referencia" value={listing.reference} numeric />
+        <Cell label="Visitas" value={formatNumber(listing.viewCount)} numeric />
       </dl>
 
-      {rows
-        .filter((row) => row.code === 'FEATURE')
-        .map((row) => (
-          <section key={row.code}>
-            <h3 className="text-strong mb-2.5 text-sm font-semibold">{row.label}</h3>
-            <ul className="flex flex-wrap gap-1.5">
-              {row.values.map((value) => (
-                <li
-                  key={value}
-                  className="bg-surface-sunken text-muted rounded-full px-3 py-1 text-xs font-medium"
-                >
-                  {value}
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))}
+      {features && features.values.length > 0 ? (
+        <section>
+          <h3 className="text-strong mb-3 text-sm font-semibold">{features.label}</h3>
+          <ul className="flex flex-wrap gap-2">
+            {features.values.map((value) => (
+              <li
+                key={value}
+                className="surface-flat text-base rounded-full px-3.5 py-1.5 text-xs font-medium"
+              >
+                {value}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </div>
   )
 }
 
-function Row({ label, value, mono = false }: { label: string; value: string; mono?: boolean }) {
+function Cell({
+  label,
+  value,
+  numeric = false,
+}: {
+  label: string
+  value: string
+  numeric?: boolean
+}) {
   return (
-    <div className="flex items-baseline justify-between gap-4 border-b border-surface pb-3">
-      <dt className="text-muted shrink-0 text-sm">{label}</dt>
-      <dd className={mono ? 'text-strong font-mono text-sm' : 'text-strong text-sm font-medium'}>
+    <div className="bg-surface-raised px-4 py-3.5">
+      <dt className="text-muted text-[0.65rem] font-semibold tracking-widest uppercase">
+        {label}
+      </dt>
+      <dd
+        className={
+          numeric
+            ? 'numeric text-strong mt-1 text-sm font-medium'
+            : 'text-strong mt-1 text-sm font-medium'
+        }
+      >
         {value}
       </dd>
     </div>
