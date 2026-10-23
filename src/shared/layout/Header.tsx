@@ -1,91 +1,94 @@
 import { Car, LayoutDashboard, Menu, Newspaper, Plus, Search, X } from 'lucide-react'
 import { useState } from 'react'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { useAuthStore } from '@/features/auth/store'
 import { UserMenu } from '@/features/auth/UserMenu'
-import { cn } from '@/shared/lib/cn'
 import { Logo } from '@/shared/layout/Logo'
 import { ThemeToggle } from '@/shared/layout/ThemeToggle'
+import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/ui/Button'
+import { SmartLink, SmartNavLink } from '@/shared/ui/SmartLink'
+import type { PageKey } from '@/app/routes'
 
-const NAV = [
-  { to: '/vehiculos', label: 'Comprar', icon: Car },
-  { to: '/publicar', label: 'Vender', icon: Plus },
-  { to: '/noticias', label: 'Noticias', icon: Newspaper },
+const NAV: { to: string; label: string; icon: typeof Car; prefetchPage: PageKey }[] = [
+  { to: '/vehiculos', label: 'Comprar', icon: Car, prefetchPage: 'listings' },
+  { to: '/publicar', label: 'Vender', icon: Plus, prefetchPage: 'publish' },
+  { to: '/noticias', label: 'Noticias', icon: Newspaper, prefetchPage: 'news' },
 ]
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [search, setSearch] = useState('')
   const user = useAuthStore((state) => state.user)
   const navigate = useNavigate()
 
-  function submitSearch(event: React.FormEvent) {
-    event.preventDefault()
-    setMenuOpen(false)
-    const term = search.trim()
-    navigate(term ? `/vehiculos?text=${encodeURIComponent(term)}` : '/vehiculos')
+  function closeMenuOnLink(event: React.MouseEvent) {
+    if ((event.target as HTMLElement).closest('a')) {
+      setMenuOpen(false)
+    }
   }
 
   return (
-    <header className="bg-surface-raised/85 sticky top-0 z-40 border-b border-surface backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:gap-5 lg:px-8">
+    <header className="surface-glass sticky top-0 z-40 border-x-0 border-t-0">
+      <div className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-4 sm:gap-4 lg:px-8">
         <Logo />
 
-        <nav aria-label="Principal" className="hidden items-center gap-1 md:flex">
-          {NAV.map(({ to, label }) => (
-            <NavLink
+        <nav aria-label="Principal" className="hidden items-center gap-0.5 md:flex">
+          {NAV.map(({ to, label, prefetchPage }) => (
+            <SmartNavLink
               key={to}
               to={to}
+              prefetchPage={prefetchPage}
               className={({ isActive }) =>
                 cn(
-                  'rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                  isActive
-                    ? 'bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-200'
-                    : 'text-muted hover:bg-surface-sunken hover:text-strong',
+                  'relative rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                  isActive ? 'text-strong' : 'text-muted hover:text-strong',
                 )
               }
             >
-              {label}
-            </NavLink>
+              {({ isActive }: { isActive: boolean }) => (
+                <>
+                  {label}
+                  {/* Subrayado corto como indicador de sección activa: más
+                      discreto que una pastilla de fondo. */}
+                  <span
+                    aria-hidden
+                    className={cn(
+                      'bg-brand-500 absolute inset-x-3 -bottom-px h-0.5 rounded-full transition-opacity',
+                      isActive ? 'opacity-100' : 'opacity-0',
+                    )}
+                  />
+                </>
+              )}
+            </SmartNavLink>
           ))}
         </nav>
 
-        <form onSubmit={submitSearch} className="ml-auto hidden flex-1 max-w-sm lg:block">
-          <label className="sr-only" htmlFor="header-search">
-            Buscar vehículos
-          </label>
-          <div className="relative flex items-center">
-            <Search className="text-muted pointer-events-none absolute left-3 size-4" aria-hidden />
-            <input
-              id="header-search"
-              type="search"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Marca, modelo o referencia"
-              className="bg-surface-sunken text-strong placeholder:text-muted/70 focus:border-brand-500 h-10 w-full rounded-xl border border-transparent pl-9 pr-3 text-sm transition-colors"
-            />
-          </div>
-        </form>
-
-        <div className="ml-auto flex items-center gap-1.5 lg:ml-0">
+        <div className="ml-auto flex items-center gap-1.5">
+          <CommandHint onClick={() => navigate('/vehiculos')} />
           <ThemeToggle />
+
           {user ? (
             <UserMenu />
           ) : (
-            <Link to="/ingresar" className="hidden sm:block">
-              <Button size="sm" variant="secondary">
-                Ingresar
-              </Button>
-            </Link>
+            <div className="hidden items-center gap-1.5 sm:flex">
+              <SmartLink to="/ingresar" prefetchPage="login">
+                <Button size="sm" variant="ghost">
+                  Ingresar
+                </Button>
+              </SmartLink>
+              <SmartLink to="/registro" prefetchPage="register">
+                <Button size="sm">Crear cuenta</Button>
+              </SmartLink>
+            </div>
           )}
+
           <button
             type="button"
             onClick={() => setMenuOpen((open) => !open)}
             aria-expanded={menuOpen}
             aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
-            className="text-muted hover:bg-surface-sunken grid size-9 place-items-center rounded-xl transition-colors md:hidden"
+            className="text-muted hover:bg-surface-sunken hover:text-strong grid size-9 place-items-center rounded-xl transition-colors md:hidden"
           >
             {menuOpen ? <X className="size-5" aria-hidden /> : <Menu className="size-5" aria-hidden />}
           </button>
@@ -95,75 +98,58 @@ export function Header() {
       {menuOpen ? (
         <div
           className="bg-surface-raised animate-rise border-t border-surface md:hidden"
-          onClick={(event) => {
-            // Cualquier enlace del menú móvil lo cierra al navegar.
-            if ((event.target as HTMLElement).closest("a")) {
-              setMenuOpen(false)
-            }
-          }}
+          onClick={closeMenuOnLink}
         >
           <nav aria-label="Principal móvil" className="mx-auto max-w-7xl px-4 py-3">
-            <form onSubmit={submitSearch} className="mb-3">
-              <div className="relative flex items-center">
-                <Search
-                  className="text-muted pointer-events-none absolute left-3 size-4"
-                  aria-hidden
-                />
-                <input
-                  type="search"
-                  value={search}
-                  onChange={(event) => setSearch(event.target.value)}
-                  placeholder="Buscar vehículos"
-                  className="bg-surface-sunken text-strong h-11 w-full rounded-xl border border-transparent pl-9 pr-3 text-sm"
-                />
-              </div>
-            </form>
             <ul className="flex flex-col gap-1">
-              {NAV.map(({ to, label, icon: Icon }) => (
+              {NAV.map(({ to, label, icon: Icon, prefetchPage }) => (
                 <li key={to}>
-                  <NavLink
+                  <SmartNavLink
                     to={to}
+                    prefetchPage={prefetchPage}
                     className={({ isActive }) =>
                       cn(
-                        'flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium',
+                        'flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors',
                         isActive
-                          ? 'bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-200'
+                          ? 'bg-brand-50 text-brand-700 dark:bg-brand-950 dark:text-brand-200'
                           : 'text-muted hover:bg-surface-sunken',
                       )
                     }
                   >
                     <Icon className="size-4" aria-hidden />
                     {label}
-                  </NavLink>
+                  </SmartNavLink>
                 </li>
               ))}
+
               {user ? (
                 <li>
-                  <NavLink
+                  <SmartNavLink
                     to="/cuenta"
+                    prefetchPage="account"
                     className={({ isActive }) =>
                       cn(
-                        'flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium',
+                        'flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors',
                         isActive
-                          ? 'bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-200'
+                          ? 'bg-brand-50 text-brand-700 dark:bg-brand-950 dark:text-brand-200'
                           : 'text-muted hover:bg-surface-sunken',
                       )
                     }
                   >
                     <LayoutDashboard className="size-4" aria-hidden />
                     Mi cuenta
-                  </NavLink>
+                  </SmartNavLink>
                 </li>
               ) : (
                 <li className="flex flex-col gap-2 pt-1">
-                  <Link to="/ingresar">
+                  <SmartLink to="/ingresar" prefetchPage="login">
                     <Button fullWidth variant="secondary">
                       Ingresar
                     </Button>
-                  </Link>
-                  <Link to="/registro">
+                  </SmartLink>
+                  <SmartLink to="/registro" prefetchPage="register">
                     <Button fullWidth>Crear cuenta</Button>
-                  </Link>
+                  </SmartLink>
                 </li>
               )}
             </ul>
@@ -171,5 +157,33 @@ export function Header() {
         </div>
       ) : null}
     </header>
+  )
+}
+
+/**
+ * Disparador de búsqueda que además anuncia el atajo de teclado.
+ *
+ * <p>Ocupa mucho menos que un campo de texto en la barra y deja claro que hay
+ * una forma rápida de llegar a cualquier parte. El atajo se muestra según el
+ * sistema, para no enseñar ⌘ en Windows.
+ */
+function CommandHint({ onClick }: { onClick: () => void }) {
+  const isApple = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform)
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        'text-muted hover:text-strong hover:border-surface-strong group flex items-center gap-2',
+        'rounded-xl border border-surface bg-surface-sunken py-2 pr-2 pl-3 text-sm transition-colors',
+      )}
+    >
+      <Search className="size-4" aria-hidden />
+      <span className="hidden lg:inline">Buscar</span>
+      <kbd className="hidden rounded-md border border-surface bg-surface-raised px-1.5 py-0.5 font-mono text-[0.65rem] lg:inline">
+        {isApple ? '⌘' : 'Ctrl'} K
+      </kbd>
+    </button>
   )
 }

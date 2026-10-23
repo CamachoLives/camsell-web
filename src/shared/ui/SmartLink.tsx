@@ -6,7 +6,7 @@ import { preloadPage, type PageKey } from '@/app/routes'
 interface SmartLinkProps {
   to: string
   /** Vista cuyo fragmento se descarga al posarse o enfocar el enlace. */
-  prefetch?: PageKey
+  prefetchPage?: PageKey
   className?: string
   children: ReactNode
   state?: unknown
@@ -23,8 +23,8 @@ interface SmartLinkProps {
  * También se dispara al enfocar con el teclado, para no castigar a quien no usa
  * un ratón.
  */
-export function SmartLink({ to, prefetch, children, ...rest }: SmartLinkProps) {
-  const warm = prefetch ? () => preloadPage(prefetch) : undefined
+export function SmartLink({ to, prefetchPage, children, ...rest }: SmartLinkProps) {
+  const warm = prefetchPage ? () => preloadPage(prefetchPage) : undefined
 
   return (
     <Link to={to} onPointerEnter={warm} onFocus={warm} {...rest}>
@@ -33,10 +33,10 @@ export function SmartLink({ to, prefetch, children, ...rest }: SmartLinkProps) {
   )
 }
 
-type SmartNavLinkProps = NavLinkProps & { prefetch?: PageKey }
+type SmartNavLinkProps = NavLinkProps & { prefetchPage?: PageKey }
 
-export function SmartNavLink({ prefetch, children, ...rest }: SmartNavLinkProps) {
-  const warm = prefetch ? () => preloadPage(prefetch) : undefined
+export function SmartNavLink({ prefetchPage, children, ...rest }: SmartNavLinkProps) {
+  const warm = prefetchPage ? () => preloadPage(prefetchPage) : undefined
 
   return (
     <NavLink onPointerEnter={warm} onFocus={warm} {...rest}>
