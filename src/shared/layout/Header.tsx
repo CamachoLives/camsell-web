@@ -1,8 +1,8 @@
 import { Car, LayoutDashboard, Menu, Newspaper, Plus, Search, X } from 'lucide-react'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 import { useAuthStore } from '@/features/auth/store'
+import { usePaletteStore } from '@/features/search/paletteStore'
 import { UserMenu } from '@/features/auth/UserMenu'
 import { Logo } from '@/shared/layout/Logo'
 import { ThemeToggle } from '@/shared/layout/ThemeToggle'
@@ -20,7 +20,7 @@ const NAV: { to: string; label: string; icon: typeof Car; prefetchPage: PageKey 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const user = useAuthStore((state) => state.user)
-  const navigate = useNavigate()
+  const openPalette = usePaletteStore((state) => state.setOpen)
 
   function closeMenuOnLink(event: React.MouseEvent) {
     if ((event.target as HTMLElement).closest('a')) {
@@ -65,7 +65,7 @@ export function Header() {
         </nav>
 
         <div className="ml-auto flex items-center gap-1.5">
-          <CommandHint onClick={() => navigate('/vehiculos')} />
+          <CommandHint onClick={() => openPalette(true)} />
           <ThemeToggle />
 
           {user ? (

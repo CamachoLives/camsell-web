@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Outlet, ScrollRestoration, useLocation } from 'react-router-dom'
 
+import { CommandPalette } from '@/features/search/CommandPalette'
 import { Footer } from '@/shared/layout/Footer'
 import { Header } from '@/shared/layout/Header'
 import { ToastViewport } from '@/shared/ui/ToastViewport'
@@ -30,6 +31,7 @@ export function AppShell() {
       </main>
 
       <Footer />
+      <CommandPalette />
       <ToastViewport />
       <ScrollRestoration />
     </div>
