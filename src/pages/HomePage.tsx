@@ -4,6 +4,7 @@ import {
   Car,
   Handshake,
   Newspaper,
+  Plus,
   Search,
   SlidersHorizontal,
   Sparkles,
@@ -90,6 +91,11 @@ function Hero({ stats }: { stats?: CatalogStats }) {
             >
               Buscar un modelo
             </Button>
+            <SmartLink to="/publicar" prefetchPage="publish">
+              <Button size="lg" variant="ghost" icon={<Plus className="size-4" />}>
+                Publicar gratis
+              </Button>
+            </SmartLink>
           </div>
 
           <div className="mt-7 flex flex-wrap items-center gap-2">
