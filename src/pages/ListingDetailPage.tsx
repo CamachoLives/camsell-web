@@ -2,6 +2,8 @@ import {
   ArrowLeft,
   Calendar,
   Check,
+  Clipboard,
+  ClipboardCheck,
   Gauge,
   Handshake,
   Heart,
@@ -50,6 +52,18 @@ export function ListingDetailPage() {
   const toast = useToast()
   const navigate = useNavigate()
   const [offerOpen, setOfferOpen] = useState(false)
+  const [refCopied, setRefCopied] = useState(false)
+
+  async function onCopyReference() {
+    if (!listing) return
+    try {
+      await navigator.clipboard.writeText(listing.reference)
+      setRefCopied(true)
+      setTimeout(() => setRefCopied(false), 2000)
+    } catch {
+      toast.error('No pudimos copiar la referencia')
+    }
+  }
 
   if (isPending) {
     return <DetailSkeleton />
@@ -136,7 +150,19 @@ export function ListingDetailPage() {
                 </Badge>
               ) : null}
               {listing.negotiable ? <Badge tone="info">Precio negociable</Badge> : null}
-              <span className="numeric text-muted ml-auto text-xs">{listing.reference}</span>
+              <button
+                type="button"
+                onClick={onCopyReference}
+                aria-label="Copiar número de referencia"
+                className="numeric text-muted hover:text-strong ml-auto flex items-center gap-1 text-xs transition-colors"
+              >
+                {refCopied ? (
+                  <ClipboardCheck className="size-3.5 text-emerald-500" aria-hidden />
+                ) : (
+                  <Clipboard className="size-3.5" aria-hidden />
+                )}
+                {listing.reference}
+              </button>
             </div>
 
             <h1 className="text-3xl font-semibold sm:text-4xl">{listing.title}</h1>
