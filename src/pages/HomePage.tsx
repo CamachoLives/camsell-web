@@ -11,7 +11,7 @@ import {
   Store,
   Zap,
 } from 'lucide-react'
-import type { ReactNode } from 'react'
+import { type ReactNode, useState } from 'react'
 
 import { useCatalogStats, useFeaturedListings } from '@/features/listings/hooks'
 import { ListingCard, ListingCardSkeleton } from '@/features/listings/ListingCard'
@@ -201,12 +201,18 @@ function FeaturedListings() {
 
 /* ── Marcas ─────────────────────────────────────────────────────────────── */
 
+const BRANDS_VISIBLE = 14
+
 function BrandStrip() {
   const { data: brands } = useBrands(false)
+  const [expanded, setExpanded] = useState(false)
 
   if (!brands || brands.length === 0) {
     return null
   }
+
+  const visible = expanded ? brands : brands.slice(0, BRANDS_VISIBLE)
+  const hasMore = brands.length > BRANDS_VISIBLE
 
   return (
     <section className="mx-auto max-w-7xl px-4 pt-20 lg:px-8">
@@ -214,7 +220,7 @@ function BrandStrip() {
         Explora por marca
       </h2>
       <div className="flex flex-wrap gap-2">
-        {brands.map((brand) => (
+        {visible.map((brand) => (
           <SmartLink
             key={brand.id}
             to={`/vehiculos?brandId=${brand.id}`}
@@ -224,6 +230,15 @@ function BrandStrip() {
             {brand.name}
           </SmartLink>
         ))}
+        {hasMore ? (
+          <button
+            type="button"
+            onClick={() => setExpanded((e) => !e)}
+            className="surface-flat hover:border-brand-400 hover:text-strong text-muted rounded-xl px-4 py-2.5 text-sm font-medium transition-colors"
+          >
+            {expanded ? 'Ver menos' : `+${brands.length - BRANDS_VISIBLE} más`}
+          </button>
+        ) : null}
       </div>
     </section>
   )
