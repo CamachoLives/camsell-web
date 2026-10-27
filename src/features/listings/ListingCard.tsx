@@ -10,6 +10,13 @@ import { Skeleton } from '@/shared/ui/Feedback'
 import { Image } from '@/shared/ui/Image'
 import { SmartLink } from '@/shared/ui/SmartLink'
 
+const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000
+
+function isRecentlyPublished(publishedAt?: string | null): boolean {
+  if (!publishedAt) return false
+  return Date.now() - new Date(publishedAt).getTime() < SEVEN_DAYS_MS
+}
+
 const STATUS_BADGE = {
   DRAFT: { tone: 'neutral', label: 'Borrador' },
   PUBLISHED: { tone: 'success', label: 'En venta' },
@@ -70,6 +77,10 @@ export function ListingCard({
           {listing.featured ? (
             <Badge onImage icon={<Sparkles className="size-3" aria-hidden />}>
               Destacado
+            </Badge>
+          ) : isRecentlyPublished(listing.publishedAt) && listing.status === 'PUBLISHED' ? (
+            <Badge onImage tone="success">
+              Nuevo
             </Badge>
           ) : null}
           {showStatus || listing.status !== 'PUBLISHED' ? (
