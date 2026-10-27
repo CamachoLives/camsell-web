@@ -4,6 +4,7 @@ import type { ListingFilters } from '@/features/listings/useListingFilters'
 import { useBrands, useFilterableGroups } from '@/features/parameters/hooks'
 import type { ParameterGroup } from '@/shared/api/types'
 import { cn } from '@/shared/lib/cn'
+import { formatPriceCompact } from '@/shared/lib/format'
 import { Button } from '@/shared/ui/Button'
 import { CheckboxField, SelectField, TextField } from '@/shared/ui/Field'
 import { Skeleton } from '@/shared/ui/Feedback'
@@ -109,6 +110,13 @@ export function FilterPanel({ filters }: FilterPanelProps) {
             }
           />
         </div>
+        {filters.params.minPrice != null || filters.params.maxPrice != null ? (
+          <p className="text-brand-700 dark:text-brand-300 numeric text-xs font-medium">
+            {filters.params.minPrice != null ? formatPriceCompact(filters.params.minPrice) : '0'}
+            {' → '}
+            {filters.params.maxPrice != null ? formatPriceCompact(filters.params.maxPrice) : 'Sin límite'}
+          </p>
+        ) : null}
       </Section>
 
       <Section title="Año y kilometraje">
