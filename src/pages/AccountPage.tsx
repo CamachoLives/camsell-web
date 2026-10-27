@@ -5,6 +5,7 @@ import {
   Handshake,
   Heart,
   Inbox,
+  LogOut,
   Plus,
   Send,
   Trash2,
@@ -494,6 +495,7 @@ function FavoritesTab() {
 function ProfileTab() {
   const user = useAuthStore((state) => state.user)
   const setUser = useAuthStore((state) => state.setUser)
+  const logout = useAuthStore((state) => state.logout)
   const toast = useToast()
   const [saving, setSaving] = useState(false)
   const [profile, setProfile] = useState({
@@ -539,7 +541,8 @@ function ProfileTab() {
   }
 
   return (
-    <div className="grid gap-5 lg:grid-cols-2">
+    <div className="flex flex-col gap-5">
+      <div className="grid gap-5 lg:grid-cols-2">
       <form onSubmit={saveProfile} className="surface-card flex flex-col gap-4 rounded-panel p-6">
         <h2 className="text-lg font-semibold">Datos personales</h2>
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
@@ -594,6 +597,24 @@ function ProfileTab() {
           Actualizar clave
         </Button>
       </form>
+      </div>
+
+      <div className="surface-card rounded-panel p-6">
+        <h2 className="text-lg font-semibold">Sesión</h2>
+        <p className="text-muted mt-1 text-sm">
+          Al cerrar sesión se borran los datos de acceso de este dispositivo.
+        </p>
+        <Button
+          variant="danger"
+          className="mt-4"
+          icon={<LogOut className="size-4" />}
+          onClick={() => {
+            logout()
+          }}
+        >
+          Cerrar sesión
+        </Button>
+      </div>
     </div>
   )
 }
