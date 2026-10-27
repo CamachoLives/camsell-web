@@ -4,7 +4,7 @@ import type { ReactNode } from 'react'
 import { useParameterDictionary } from '@/features/parameters/hooks'
 import type { ListingSummary } from '@/shared/api/types'
 import { cn } from '@/shared/lib/cn'
-import { formatNumber, formatPrice } from '@/shared/lib/format'
+import { formatNumber, formatPrice, formatPriceCompact } from '@/shared/lib/format'
 import { Badge, StatusDot } from '@/shared/ui/Badge'
 import { Skeleton } from '@/shared/ui/Feedback'
 import { Image } from '@/shared/ui/Image'
@@ -102,8 +102,8 @@ export function ListingCard({
         </h3>
 
         <div className="mt-3 flex items-baseline gap-2">
-          <p className="numeric text-strong text-xl font-semibold">
-            {formatPrice(listing.price, listing.currency)}
+          <p className="numeric text-strong text-xl font-semibold" title={formatPrice(listing.price, listing.currency)}>
+            {formatPriceCompact(listing.price, listing.currency)}
           </p>
           {listing.negotiable ? (
             <span className="text-muted text-[0.7rem] font-medium">negociable</span>
