@@ -1,9 +1,12 @@
-import { Compass } from 'lucide-react'
+import { Compass, Search } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
+import { usePaletteStore } from '@/features/search/paletteStore'
 import { Button } from '@/shared/ui/Button'
 
 export function NotFoundPage() {
+  const openPalette = usePaletteStore((state) => state.setOpen)
+
   return (
     <section className="mx-auto flex max-w-xl flex-col items-center gap-4 px-4 py-24 text-center">
       <span className="bg-surface-sunken text-muted grid size-14 place-items-center rounded-panel">
@@ -21,6 +24,13 @@ export function NotFoundPage() {
         <Link to="/vehiculos">
           <Button>Ver el catálogo</Button>
         </Link>
+        <Button
+          variant="glass"
+          icon={<Search className="size-4" />}
+          onClick={() => openPalette(true)}
+        >
+          Buscar un vehículo
+        </Button>
       </div>
     </section>
   )
