@@ -1,4 +1,4 @@
-import { Code2 } from 'lucide-react'
+import { ArrowUp, Code2 } from 'lucide-react'
 
 import { Logo } from '@/shared/layout/Logo'
 import { SmartLink } from '@/shared/ui/SmartLink'
@@ -94,7 +94,18 @@ export function Footer() {
 
         <div className="text-muted mt-12 flex flex-col gap-2 border-t border-surface pt-6 text-xs sm:flex-row sm:items-center sm:justify-between">
           <p>© {CURRENT_YEAR} Camsell. Proyecto de demostración.</p>
-          <p>Los vehículos y las notas son datos de ejemplo generados para probar la plataforma.</p>
+          <div className="flex items-center gap-4">
+            <p>Los vehículos y las notas son datos de ejemplo.</p>
+            <button
+              type="button"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              aria-label="Volver al inicio de la página"
+              className="hover:text-strong inline-flex items-center gap-1 transition-colors"
+            >
+              <ArrowUp className="size-3" aria-hidden />
+              Inicio
+            </button>
+          </div>
         </div>
       </div>
     </footer>
