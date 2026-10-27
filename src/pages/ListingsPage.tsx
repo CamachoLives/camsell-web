@@ -84,8 +84,18 @@ export function ListingsPage() {
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
             placeholder="Toyota, Hilux, CAMS-D0001…"
-            className="bg-surface-raised text-strong placeholder:text-muted/60 hover:border-surface-strong focus:border-brand-500 h-11 w-full rounded-xl border border-surface pr-3 pl-10 text-sm transition-colors"
+            className="bg-surface-raised text-strong placeholder:text-muted/60 hover:border-surface-strong focus:border-brand-500 h-11 w-full rounded-xl border border-surface pr-10 pl-10 text-sm transition-colors"
           />
+          {searchTerm ? (
+            <button
+              type="button"
+              aria-label="Limpiar búsqueda"
+              onClick={() => setSearchTerm('')}
+              className="text-muted hover:text-strong absolute right-3 transition-colors"
+            >
+              <X className="size-4" aria-hidden />
+            </button>
+          ) : null}
         </div>
 
         <Button
