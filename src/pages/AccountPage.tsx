@@ -36,6 +36,13 @@ import { EmptyState, ErrorState, Skeleton } from '@/shared/ui/Feedback'
 import { Pagination } from '@/shared/ui/Pagination'
 import { useToast } from '@/shared/ui/toast'
 
+function greeting(): string {
+  const hour = new Date().getHours()
+  if (hour < 12) return 'Buenos días'
+  if (hour < 19) return 'Buenas tardes'
+  return 'Buenas noches'
+}
+
 const TABS = [
   { id: 'publicaciones', label: 'Mis publicaciones', icon: Car },
   { id: 'recibidas', label: 'Ofertas recibidas', icon: Inbox },
@@ -68,7 +75,7 @@ export function AccountPage() {
         <div>
           <h1 className="text-3xl font-semibold sm:text-4xl">Mi cuenta</h1>
           <p className="text-muted mt-1.5">
-            Hola {user?.fullName.split(' ')[0]}. Administra tus publicaciones y tus negociaciones.
+            {greeting()}, {user?.fullName.split(' ')[0]}. Administra tus publicaciones y tus negociaciones.
           </p>
         </div>
         <Link to="/publicar">
