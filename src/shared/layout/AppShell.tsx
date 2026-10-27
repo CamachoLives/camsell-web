@@ -6,13 +6,33 @@ import { Footer } from '@/shared/layout/Footer'
 import { Header } from '@/shared/layout/Header'
 import { ToastViewport } from '@/shared/ui/ToastViewport'
 
+const PAGE_TITLES: Record<string, string> = {
+  '/': 'Camsell — Compra y vende carros sin dar vueltas',
+  '/vehiculos': 'Catálogo de vehículos — Camsell',
+  '/publicar': 'Publicar vehículo — Camsell',
+  '/noticias': 'Noticias del mercado automotor — Camsell',
+  '/ingresar': 'Ingresar — Camsell',
+  '/registro': 'Crear cuenta — Camsell',
+  '/cuenta': 'Mi cuenta — Camsell',
+}
+
+function resolveTitle(pathname: string): string {
+  if (PAGE_TITLES[pathname]) return PAGE_TITLES[pathname]
+  if (pathname.startsWith('/vehiculos/')) return 'Detalle del vehículo — Camsell'
+  if (pathname.startsWith('/noticias/')) return 'Artículo — Camsell'
+  if (pathname.startsWith('/admin')) return 'Administración — Camsell'
+  return 'Camsell'
+}
+
 export function AppShell() {
   const { pathname } = useLocation()
 
-  // Cada navegación mueve el foco al contenido, para que el lector de pantalla
-  // anuncie la vista nueva y no siga leyendo el menú.
   useEffect(() => {
     document.getElementById('contenido')?.focus({ preventScroll: true })
+  }, [pathname])
+
+  useEffect(() => {
+    document.title = resolveTitle(pathname)
   }, [pathname])
 
   return (
