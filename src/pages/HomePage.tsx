@@ -45,10 +45,14 @@ export function HomePage() {
 /** Atajos a búsquedas que la gente realmente hace. */
 const QUICK_FILTERS = [
   { label: 'SUV', to: '/vehiculos?attr=BODY_TYPE%3ASUV' },
+  { label: 'Sedán', to: '/vehiculos?attr=BODY_TYPE%3ASEDAN' },
+  { label: 'Pick-up', to: '/vehiculos?attr=BODY_TYPE%3APICKUP' },
   { label: 'Híbridos', to: '/vehiculos?attr=FUEL_TYPE%3AHYBRID' },
   { label: 'Eléctricos', to: '/vehiculos?attr=FUEL_TYPE%3AELECTRIC' },
   { label: 'Automáticas', to: '/vehiculos?attr=TRANSMISSION%3AAUTOMATIC' },
   { label: 'Hasta $80 M', to: '/vehiculos?maxPrice=80000000' },
+  { label: 'Hasta $50 M', to: '/vehiculos?maxPrice=50000000' },
+  { label: 'Menos de 50k km', to: '/vehiculos?maxMileage=50000' },
   { label: 'Único dueño', to: '/vehiculos?attr=SINGLE_OWNER%3Atrue' },
 ]
 
