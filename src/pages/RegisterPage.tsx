@@ -182,6 +182,19 @@ export function RegisterPage() {
           </Link>
         </p>
       </div>
+
+      <aside className="surface-card mt-4 rounded-panel p-5">
+        <p className="text-muted text-xs leading-relaxed">
+          <span className="text-strong font-medium">¿Solo quieres explorar?</span> Puedes{' '}
+          <Link
+            to="/ingresar"
+            className="text-brand-700 dark:text-brand-300 font-medium hover:underline"
+          >
+            ingresar con una cuenta de demostración
+          </Link>{' '}
+          en la pantalla de acceso. No se requiere correo real.
+        </p>
+      </aside>
     </section>
   )
 }
