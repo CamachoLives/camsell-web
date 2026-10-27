@@ -1,5 +1,5 @@
 import { Car, LayoutDashboard, Menu, Newspaper, Plus, Search, X } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useAuthStore } from '@/features/auth/store'
 import { usePaletteStore } from '@/features/search/paletteStore'
@@ -19,8 +19,17 @@ const NAV: { to: string; label: string; icon: typeof Car; prefetchPage: PageKey 
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const user = useAuthStore((state) => state.user)
   const openPalette = usePaletteStore((state) => state.setOpen)
+
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 20)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   function closeMenuOnLink(event: React.MouseEvent) {
     if ((event.target as HTMLElement).closest('a')) {
@@ -29,8 +38,8 @@ export function Header() {
   }
 
   return (
-    <header className="surface-glass sticky top-0 z-40 border-x-0 border-t-0">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-4 sm:gap-4 lg:px-8">
+    <header className={cn('surface-glass sticky top-0 z-40 border-x-0 border-t-0 transition-shadow duration-300', scrolled && 'shadow-card')}>
+      <div className={cn('mx-auto flex max-w-7xl items-center gap-2 px-4 sm:gap-4 lg:px-8 transition-[height] duration-300', scrolled ? 'h-14' : 'h-16')}>
         <Logo />
 
         <nav aria-label="Principal" className="hidden items-center gap-0.5 md:flex">
