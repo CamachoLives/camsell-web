@@ -1,9 +1,11 @@
-import { useEffect } from 'react'
+import { ArrowUp } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { Outlet, ScrollRestoration, useLocation } from 'react-router-dom'
 
 import { CommandPalette } from '@/features/search/CommandPalette'
 import { Footer } from '@/shared/layout/Footer'
 import { Header } from '@/shared/layout/Header'
+import { cn } from '@/shared/lib/cn'
 import { ToastViewport } from '@/shared/ui/ToastViewport'
 
 const PAGE_TITLES: Record<string, string> = {
@@ -54,6 +56,35 @@ export function AppShell() {
       <CommandPalette />
       <ToastViewport />
       <ScrollRestoration />
+      <ScrollToTopButton />
     </div>
+  )
+}
+
+function ScrollToTopButton() {
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    function onScroll() {
+      setVisible(window.scrollY > 400)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  return (
+    <button
+      type="button"
+      aria-label="Volver al inicio de la página"
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      className={cn(
+        'fixed bottom-6 right-6 z-50 grid size-11 place-items-center rounded-full',
+        'bg-brand-600 text-white shadow-lift transition-all duration-300',
+        'hover:bg-brand-500 active:scale-95',
+        visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0 pointer-events-none',
+      )}
+    >
+      <ArrowUp className="size-5" aria-hidden />
+    </button>
   )
 }
