@@ -1,4 +1,4 @@
-import { Calendar, Gauge, MapPin, Sparkles } from 'lucide-react'
+import { Calendar, Eye, Gauge, MapPin, Sparkles } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 import { useParameterDictionary } from '@/features/parameters/hooks'
@@ -117,7 +117,15 @@ export function ListingCard({
 
         <div className="mt-auto flex items-center justify-between gap-2 pt-3.5">
           <span className="text-muted truncate text-xs">{listing.sellerName}</span>
-          <span className="numeric text-muted shrink-0 text-[0.65rem]">{listing.reference}</span>
+          <div className="flex shrink-0 items-center gap-2">
+            {listing.viewCount > 0 ? (
+              <span className="text-muted flex items-center gap-0.5 text-[0.65rem]">
+                <Eye className="size-3" aria-hidden />
+                <span className="numeric">{formatNumber(listing.viewCount)}</span>
+              </span>
+            ) : null}
+            <span className="numeric text-muted text-[0.65rem]">{listing.reference}</span>
+          </div>
         </div>
 
         {actions ? <div className="mt-3 flex flex-wrap gap-2">{actions}</div> : null}
