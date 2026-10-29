@@ -1,5 +1,5 @@
 import { Car, LayoutGrid, Rows3, Search, SlidersHorizontal, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { FilterPanel } from '@/features/listings/FilterPanel'
 import { useListingSearch } from '@/features/listings/hooks'
@@ -7,13 +7,15 @@ import { ListingCard, ListingCardSkeleton } from '@/features/listings/ListingCar
 import { useListingFilters } from '@/features/listings/useListingFilters'
 import { useBrands, useParameterDictionary } from '@/features/parameters/hooks'
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue'
+import { useIntersection } from '@/shared/hooks/useIntersection'
 import { cn } from '@/shared/lib/cn'
 import { formatNumber, formatPriceCompact } from '@/shared/lib/format'
 import { Badge } from '@/shared/ui/Badge'
 import { Button } from '@/shared/ui/Button'
-import { EmptyState, ErrorState } from '@/shared/ui/Feedback'
+import { EmptyState, ErrorState, Spinner } from '@/shared/ui/Feedback'
 import { Pagination } from '@/shared/ui/Pagination'
 import { SmartLink } from '@/shared/ui/SmartLink'
+import type { ListingSummary } from '@/shared/api/types'
 
 const SORTS = [
   { value: '', label: 'Más recientes' },
@@ -41,6 +43,9 @@ export function ListingsPage() {
   const debouncedTerm = useDebouncedValue(searchTerm)
   const [panelOpen, setPanelOpen] = useState(false)
   const [view, setView] = useState<ViewMode>(readStoredView)
+  const [accumulated, setAccumulated] = useState<ListingSummary[]>([])
+  const prevParamsRef = useRef<string>('')
+  const { ref: sentinelRef, intersecting } = useIntersection<HTMLDivElement>()
 
   // El texto se escribe libre y se aplica con retardo, para no lanzar una
   // consulta por cada tecla.
@@ -62,6 +67,31 @@ export function ListingsPage() {
   const { data, isPending, isError, error, refetch, isPlaceholderData } = useListingSearch(
     filters.params,
   )
+
+  // Accumulate results for infinite scroll; reset on filter/sort change.
+  useEffect(() => {
+    if (!data) return
+    const paramsKey = JSON.stringify({ ...filters.params, page: 0 })
+    if (paramsKey !== prevParamsRef.current) {
+      prevParamsRef.current = paramsKey
+      setAccumulated(data.content)
+    } else {
+      setAccumulated((prev) => {
+        const ids = new Set(prev.map((l) => l.id))
+        return [...prev, ...data.content.filter((l) => !ids.has(l.id))]
+      })
+    }
+  }, [data]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Auto-load next page when sentinel enters viewport.
+  useEffect(() => {
+    if (!intersecting || !data || isPlaceholderData || isPending) return
+    if (data.page < data.totalPages - 1) {
+      filters.setPage(data.page + 1)
+    }
+  }, [intersecting]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const displayItems = accumulated.length > 0 ? accumulated : (data?.content ?? [])
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-9 lg:px-8">
@@ -199,37 +229,49 @@ export function ListingsPage() {
             />
           ) : (
             <>
-              {/* Se atenúa mientras llega la página siguiente, en lugar de
-                  vaciarse y perder el contexto de lectura. */}
               <div
                 className={cn(
-                  'transition-opacity duration-200',
-                  isPlaceholderData && 'opacity-55',
+                  'grid gap-5',
+                  view === 'grid' ? 'sm:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1',
                 )}
               >
-                <div
-                  className={cn(
-                    'grid gap-5',
-                    view === 'grid' ? 'sm:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1',
-                  )}
-                >
-                  {data.content.map((listing, index) => (
-                    <ListingCard
-                      key={listing.id}
-                      listing={listing}
-                      index={index}
-                      layout={view}
-                      priority={index < 3}
-                    />
-                  ))}
-                </div>
+                {displayItems.map((listing, index) => (
+                  <ListingCard
+                    key={listing.id}
+                    listing={listing}
+                    index={index % 9}
+                    layout={view}
+                    priority={index < 3}
+                  />
+                ))}
               </div>
 
-              <div className="mt-10">
+              {/* Infinite-scroll sentinel */}
+              {data && !data.last ? (
+                <div ref={sentinelRef} className="mt-8 flex justify-center">
+                  {isPlaceholderData ? (
+                    <Spinner label="Cargando más vehículos…" />
+                  ) : (
+                    <Button
+                      variant="secondary"
+                      onClick={() => filters.setPage((data?.page ?? 0) + 1)}
+                    >
+                      Cargar más vehículos
+                    </Button>
+                  )}
+                </div>
+              ) : data && accumulated.length > 0 ? (
+                <p className="text-muted mt-8 text-center text-sm">
+                  Has visto todos los {formatNumber(accumulated.length)} resultados.
+                </p>
+              ) : null}
+
+              {/* Standard pagination hidden visually but keeps URL state */}
+              <div className="sr-only">
                 <Pagination
-                  page={data.page}
-                  totalPages={data.totalPages}
-                  totalElements={data.totalElements}
+                  page={data?.page ?? 0}
+                  totalPages={data?.totalPages ?? 1}
+                  totalElements={data?.totalElements ?? 0}
                   onChange={filters.setPage}
                 />
               </div>
