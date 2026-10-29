@@ -15,7 +15,8 @@ import { type ReactNode, useState } from 'react'
 
 import { useCatalogStats, useFeaturedListings } from '@/features/listings/hooks'
 import { useCountUp } from '@/shared/hooks/useCountUp'
-import { ListingCard, ListingCardSkeleton } from '@/features/listings/ListingCard'
+import { ListingCard, ListingCardCompact, ListingCardSkeleton } from '@/features/listings/ListingCard'
+import { useRecentlyViewed } from '@/features/listings/useRecentlyViewed'
 import { ArticleCard, ArticleCardSkeleton } from '@/features/news/ArticleCard'
 import { useFeaturedNews } from '@/features/news/hooks'
 import { useBrands } from '@/features/parameters/hooks'
@@ -33,6 +34,7 @@ export function HomePage() {
     <>
       <Hero stats={stats} />
       <FeaturedListings />
+      <RecentlyViewedSection />
       <BrandStrip />
       <ValueBento />
       <LatestNews />
@@ -198,6 +200,33 @@ function FeaturedListings() {
                 priority={index < 3}
               />
             ))}
+      </div>
+    </Section>
+  )
+}
+
+/* ── Vistos recientemente ───────────────────────────────────────────────── */
+
+function RecentlyViewedSection() {
+  const { items, clear } = useRecentlyViewed()
+
+  if (items.length === 0) return null
+
+  return (
+    <Section
+      eyebrow="Historial"
+      eyebrowIcon={<Car className="size-4" aria-hidden />}
+      title="Viste recientemente"
+      action={
+        <Button variant="ghost" size="sm" onClick={clear}>
+          Limpiar
+        </Button>
+      }
+    >
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {items.map((listing) => (
+          <ListingCardCompact key={listing.id} listing={listing} />
+        ))}
       </div>
     </Section>
   )

@@ -13,12 +13,13 @@ import {
   Star,
   User,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 
 import { useAuthStore } from '@/features/auth/store'
 import { useToggleFavorite } from '@/features/favorites/hooks'
 import { useListing } from '@/features/listings/hooks'
+import { useRecentlyViewed } from '@/features/listings/useRecentlyViewed'
 import { ListingGallery } from '@/features/listings/ListingGallery'
 import { SpecsTable } from '@/features/listings/SpecsTable'
 import { OfferDialog } from '@/features/offers/OfferDialog'
@@ -49,10 +50,16 @@ export function ListingDetailPage() {
   const user = useAuthStore((state) => state.user)
   const dictionary = useParameterDictionary()
   const toggleFavorite = useToggleFavorite(slug)
+  const { track: trackView } = useRecentlyViewed()
   const toast = useToast()
   const navigate = useNavigate()
   const [offerOpen, setOfferOpen] = useState(false)
   const [refCopied, setRefCopied] = useState(false)
+
+  // Register the listing in the recently-viewed list as soon as it loads.
+  useEffect(() => {
+    if (listing) trackView(listing)
+  }, [listing, trackView])
 
   async function onCopyReference() {
     if (!listing) return
