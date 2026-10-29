@@ -1,4 +1,4 @@
-import { BarChart2 } from 'lucide-react'
+import { BarChart2, Flame } from 'lucide-react'
 import { Calendar, Eye, Gauge, MapPin, Sparkles } from 'lucide-react'
 import type { ReactNode } from 'react'
 
@@ -13,10 +13,15 @@ import { Image } from '@/shared/ui/Image'
 import { SmartLink } from '@/shared/ui/SmartLink'
 
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000
+const TRENDING_VIEWS = 50
 
 function isRecentlyPublished(publishedAt?: string | null): boolean {
   if (!publishedAt) return false
   return Date.now() - new Date(publishedAt).getTime() < SEVEN_DAYS_MS
+}
+
+function isTrending(listing: ListingSummary): boolean {
+  return listing.viewCount >= TRENDING_VIEWS && listing.status === 'PUBLISHED'
 }
 
 const STATUS_BADGE = {
@@ -56,6 +61,8 @@ export function ListingCard({
 
   const highlightBadge = listing.featured ? (
     <Badge onImage icon={<Sparkles className="size-3" aria-hidden />}>Destacado</Badge>
+  ) : isTrending(listing) ? (
+    <Badge onImage tone="danger" icon={<Flame className="size-3" aria-hidden />}>Tendencia</Badge>
   ) : isRecentlyPublished(listing.publishedAt) && listing.status === 'PUBLISHED' ? (
     <Badge onImage tone="success">Nuevo</Badge>
   ) : null
