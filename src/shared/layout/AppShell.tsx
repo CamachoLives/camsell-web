@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Outlet, ScrollRestoration, useLocation } from 'react-router-dom'
 
 import { ChatBot } from '@/features/chatbot/ChatBot'
+import { CompareBar } from '@/features/compare/CompareBar'
 import { WelcomeModal } from '@/features/onboarding/WelcomeModal'
 import { CommandPalette } from '@/features/search/CommandPalette'
 import { Footer } from '@/shared/layout/Footer'
@@ -58,6 +59,7 @@ export function AppShell() {
       <CommandPalette />
       <WelcomeModal />
       <ChatBot />
+      <CompareBar />
       <ToastViewport />
       <ScrollRestoration />
       <ScrollToTopButton />

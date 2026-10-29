@@ -21,6 +21,7 @@ export const pageLoaders = {
   account: () => import('@/pages/AccountPage'),
   admin: () => import('@/pages/AdminPage'),
   notFound: () => import('@/pages/NotFoundPage'),
+  compare: () => import('@/pages/ComparePage'),
 } as const
 
 export type PageKey = keyof typeof pageLoaders
@@ -65,4 +66,7 @@ export const AccountPage = lazy(() =>
 export const AdminPage = lazy(() => pageLoaders.admin().then((m) => ({ default: m.AdminPage })))
 export const NotFoundPage = lazy(() =>
   pageLoaders.notFound().then((m) => ({ default: m.NotFoundPage })),
+)
+export const ComparePage = lazy(() =>
+  pageLoaders.compare().then((m) => ({ default: m.ComparePage })),
 )

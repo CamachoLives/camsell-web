@@ -1,6 +1,8 @@
+import { BarChart2 } from 'lucide-react'
 import { Calendar, Eye, Gauge, MapPin, Sparkles } from 'lucide-react'
 import type { ReactNode } from 'react'
 
+import { useCompareStore } from '@/features/compare/compareStore'
 import { useParameterDictionary } from '@/features/parameters/hooks'
 import type { ListingSummary } from '@/shared/api/types'
 import { cn } from '@/shared/lib/cn'
@@ -46,6 +48,8 @@ export function ListingCard({
   priority = false,
 }: ListingCardProps) {
   const dictionary = useParameterDictionary()
+  const { add, remove, has } = useCompareStore()
+  const inCompare = has(listing.id)
   const status = STATUS_BADGE[listing.status]
   const href = `/vehiculos/${listing.slug}`
   const isRow = layout === 'row'
@@ -138,6 +142,24 @@ export function ListingCard({
         </div>
 
         {actions ? <div className="mt-3 flex flex-wrap gap-2">{actions}</div> : null}
+
+        {listing.status === 'PUBLISHED' ? (
+          <button
+            type="button"
+            aria-label={inCompare ? 'Quitar de comparación' : 'Agregar a comparación'}
+            aria-pressed={inCompare}
+            onClick={() => (inCompare ? remove(listing.id) : add(listing))}
+            className={cn(
+              'mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl border py-1.5 text-xs font-medium transition-colors',
+              inCompare
+                ? 'border-brand-400 bg-brand-50 text-brand-700 dark:bg-brand-950 dark:text-brand-300'
+                : 'border-surface text-muted hover:border-brand-300 hover:text-brand-600',
+            )}
+          >
+            <BarChart2 className="size-3.5" aria-hidden />
+            {inCompare ? 'En comparación' : 'Comparar'}
+          </button>
+        ) : null}
       </div>
     </article>
   )
