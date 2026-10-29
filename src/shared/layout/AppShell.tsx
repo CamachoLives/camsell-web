@@ -6,6 +6,7 @@ import { ChatBot } from '@/features/chatbot/ChatBot'
 import { CompareBar } from '@/features/compare/CompareBar'
 import { WelcomeModal } from '@/features/onboarding/WelcomeModal'
 import { CommandPalette } from '@/features/search/CommandPalette'
+import { ShortcutsDialog } from '@/features/shortcuts/ShortcutsDialog'
 import { Footer } from '@/shared/layout/Footer'
 import { Header } from '@/shared/layout/Header'
 import { cn } from '@/shared/lib/cn'
@@ -57,6 +58,7 @@ export function AppShell() {
 
       <Footer />
       <CommandPalette />
+      <ShortcutsDialog />
       <WelcomeModal />
       <ChatBot />
       <CompareBar />
