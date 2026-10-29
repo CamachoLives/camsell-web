@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import {
   ArrowRight,
   Car,
+  Clock,
   CornerDownLeft,
   Heart,
   LayoutDashboard,
@@ -11,7 +12,7 @@ import {
   Settings,
   Tag,
 } from 'lucide-react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useAuthStore } from '@/features/auth/store'
@@ -22,6 +23,27 @@ import { usePaletteStore } from '@/features/search/paletteStore'
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue'
 import { cn } from '@/shared/lib/cn'
 import { formatPriceCompact, formatReadingTime } from '@/shared/lib/format'
+
+const HISTORY_KEY = 'camsell.searchHistory'
+const MAX_HISTORY = 5
+
+function readHistory(): string[] {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY)
+    return raw ? (JSON.parse(raw) as string[]) : []
+  } catch {
+    return []
+  }
+}
+
+function pushHistory(term: string) {
+  try {
+    const current = readHistory().filter((t) => t !== term)
+    localStorage.setItem(HISTORY_KEY, JSON.stringify([term, ...current].slice(0, MAX_HISTORY)))
+  } catch {
+    // ignore
+  }
+}
 
 interface Command {
   id: string
@@ -49,9 +71,16 @@ export function CommandPalette() {
 
   const [term, setTerm] = useState('')
   const [active, setActive] = useState(0)
+  const [history, setHistory] = useState<string[]>(readHistory)
   const debouncedTerm = useDebouncedValue(term, 220)
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLUListElement>(null)
+
+  const saveToHistory = useCallback((searchTerm: string) => {
+    if (!searchTerm.trim()) return
+    pushHistory(searchTerm.trim())
+    setHistory(readHistory())
+  }, [])
 
   // El atajo se registra una sola vez, a nivel de documento.
   useEffect(() => {
@@ -100,7 +129,8 @@ export function CommandPalette() {
   const { data: brands } = useBrands(false)
 
   const commands = useMemo<Command[]>(() => {
-    const go = (to: string) => () => {
+    const go = (to: string, historyTerm?: string) => () => {
+      if (historyTerm) saveToHistory(historyTerm)
       setOpen(false)
       navigate(to)
     }
@@ -184,13 +214,24 @@ export function CommandPalette() {
             label: `Buscar "${term.trim()}" en todo el catálogo`,
             group: 'Búsqueda',
             icon: Search,
-            run: go(`/vehiculos?text=${encodeURIComponent(term.trim())}`),
+            run: go(`/vehiculos?text=${encodeURIComponent(term.trim())}`, term.trim()),
           },
         ]
       : []
 
-    return [...searchAll, ...listingCommands, ...brandCommands, ...newsCommands, ...matchedNavigation]
-  }, [term, listings, news, brands, user, navigate, setOpen])
+    const historyCommands: Command[] = !query
+      ? history.map((h) => ({
+          id: `history-${h}`,
+          label: h,
+          hint: 'Búsqueda reciente',
+          group: 'Recientes',
+          icon: Clock,
+          run: go(`/vehiculos?text=${encodeURIComponent(h)}`, h),
+        }))
+      : []
+
+    return [...searchAll, ...listingCommands, ...brandCommands, ...newsCommands, ...historyCommands, ...matchedNavigation]
+  }, [term, listings, news, brands, user, history, navigate, setOpen, saveToHistory])
 
   // Al escribir, el resultado cambia: volver al inicio evita que el cursor
   // quede apuntando a un elemento distinto del que el usuario esperaría.
