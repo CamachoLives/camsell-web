@@ -99,6 +99,12 @@ export function formatRelative(value?: string | null): string {
   return formatter.format(Math.round(diffSeconds), 'second')
 }
 
+/** Tiempo de lectura legible, por ejemplo `1 min de lectura` o `5 min de lectura`. */
+export function formatReadingTime(minutes: number): string {
+  const rounded = Math.max(1, Math.round(minutes))
+  return `${rounded} min de lectura`
+}
+
 export function initials(fullName: string): string {
   return fullName
     .split(' ')
