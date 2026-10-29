@@ -96,7 +96,7 @@ export function formatRelative(value?: string | null): string {
       return formatter.format(Math.round(diffSeconds / seconds), unit)
     }
   }
-  return 'hace un momento'
+  return formatter.format(Math.round(diffSeconds), 'second')
 }
 
 export function initials(fullName: string): string {
