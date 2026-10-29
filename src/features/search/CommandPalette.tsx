@@ -21,7 +21,7 @@ import { useBrands } from '@/features/parameters/hooks'
 import { usePaletteStore } from '@/features/search/paletteStore'
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue'
 import { cn } from '@/shared/lib/cn'
-import { formatPriceCompact } from '@/shared/lib/format'
+import { formatPriceCompact, formatReadingTime } from '@/shared/lib/format'
 
 interface Command {
   id: string
@@ -171,7 +171,7 @@ export function CommandPalette() {
     const newsCommands: Command[] = (news?.content ?? []).map((article) => ({
       id: `news-${article.id}`,
       label: article.title,
-      hint: `${article.readingMinutes} min de lectura`,
+      hint: formatReadingTime(article.readingMinutes),
       group: 'Noticias',
       icon: Newspaper,
       run: go(`/noticias/${article.slug}`),
