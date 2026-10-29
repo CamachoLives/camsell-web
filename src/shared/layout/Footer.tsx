@@ -1,12 +1,9 @@
 import { ArrowUp, Code2 } from 'lucide-react'
+import { useMemo } from 'react'
 
 import { Logo } from '@/shared/layout/Logo'
 import { SmartLink } from '@/shared/ui/SmartLink'
 import type { PageKey } from '@/app/routes'
-
-// Se calcula una vez al cargar el módulo: llamar a Date durante el render hace
-// que el componente deje de ser puro.
-const CURRENT_YEAR = new Date().getFullYear()
 
 interface FooterLink {
   to: string
@@ -43,6 +40,8 @@ const SECTIONS: { title: string; links: FooterLink[] }[] = [
 ]
 
 export function Footer() {
+  const currentYear = useMemo(() => new Date().getFullYear(), [])
+
   return (
     <footer className="bg-surface-sunken relative mt-24 overflow-hidden border-t border-surface">
       {/* Retícula invertida: ancla el pie de página sin competir con el texto. */}
@@ -93,7 +92,7 @@ export function Footer() {
         </div>
 
         <div className="text-muted mt-12 flex flex-col gap-2 border-t border-surface pt-6 text-xs sm:flex-row sm:items-center sm:justify-between">
-          <p>© {CURRENT_YEAR} Camsell. Proyecto de demostración.</p>
+          <p>© {currentYear} Camsell. Proyecto de demostración.</p>
           <div className="flex items-center gap-4">
             <p>Los vehículos y las notas son datos de ejemplo.</p>
             <button
