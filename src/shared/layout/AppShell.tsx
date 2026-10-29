@@ -2,6 +2,7 @@ import { ArrowUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Outlet, ScrollRestoration, useLocation } from 'react-router-dom'
 
+import { ChatBot } from '@/features/chatbot/ChatBot'
 import { WelcomeModal } from '@/features/onboarding/WelcomeModal'
 import { CommandPalette } from '@/features/search/CommandPalette'
 import { Footer } from '@/shared/layout/Footer'
@@ -56,6 +57,7 @@ export function AppShell() {
       <Footer />
       <CommandPalette />
       <WelcomeModal />
+      <ChatBot />
       <ToastViewport />
       <ScrollRestoration />
       <ScrollToTopButton />
