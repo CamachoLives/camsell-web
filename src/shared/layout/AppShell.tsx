@@ -2,6 +2,7 @@ import { ArrowUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Outlet, ScrollRestoration, useLocation } from 'react-router-dom'
 
+import { SessionExpiryWarning } from '@/features/auth/SessionExpiryWarning'
 import { ChatBot } from '@/features/chatbot/ChatBot'
 import { CompareBar } from '@/features/compare/CompareBar'
 import { WelcomeModal } from '@/features/onboarding/WelcomeModal'
@@ -59,6 +60,7 @@ export function AppShell() {
       <Footer />
       <CommandPalette />
       <ShortcutsDialog />
+      <SessionExpiryWarning />
       <WelcomeModal />
       <ChatBot />
       <CompareBar />
