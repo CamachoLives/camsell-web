@@ -3,7 +3,7 @@ import { Clock } from 'lucide-react'
 import { useParameterDictionary } from '@/features/parameters/hooks'
 import type { ArticleSummary } from '@/shared/api/types'
 import { cn } from '@/shared/lib/cn'
-import { formatDateShort } from '@/shared/lib/format'
+import { formatDateShort, formatReadingTime } from '@/shared/lib/format'
 import { Badge } from '@/shared/ui/Badge'
 import { Skeleton } from '@/shared/ui/Feedback'
 import { Image } from '@/shared/ui/Image'
@@ -93,7 +93,7 @@ export function ArticleCard({ article, highlight = false, index = 0 }: ArticleCa
           <span className="numeric">{formatDateShort(article.publishedAt)}</span>
           <span className="flex items-center gap-1">
             <Clock className="size-3" aria-hidden />
-            {article.readingMinutes} min
+            {formatReadingTime(article.readingMinutes)}
           </span>
         </div>
       </div>
