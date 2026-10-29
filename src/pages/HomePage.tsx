@@ -14,6 +14,7 @@ import {
 import { type ReactNode, useState } from 'react'
 
 import { useCatalogStats, useFeaturedListings } from '@/features/listings/hooks'
+import { useCountUp } from '@/shared/hooks/useCountUp'
 import { ListingCard, ListingCardSkeleton } from '@/features/listings/ListingCard'
 import { ArticleCard, ArticleCardSkeleton } from '@/features/news/ArticleCard'
 import { useFeaturedNews } from '@/features/news/hooks'
@@ -139,8 +140,11 @@ function Stat({
   value?: number
   highlight?: boolean
 }) {
+  const { value: animated, ref } = useCountUp(value)
+
   return (
     <div
+      ref={ref as React.RefObject<HTMLDivElement>}
       className={
         highlight
           ? 'surface-edge rounded-card px-4 py-3.5'
@@ -151,10 +155,10 @@ function Stat({
         {label}
       </dt>
       <dd className="numeric text-strong mt-1.5 text-2xl font-semibold">
-        {value === undefined ? (
+        {animated === undefined ? (
           <span className="skeleton block h-7 w-14 rounded-md" />
         ) : (
-          formatNumber(value)
+          formatNumber(animated)
         )}
       </dd>
     </div>
