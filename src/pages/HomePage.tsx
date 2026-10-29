@@ -13,6 +13,8 @@ import {
 } from 'lucide-react'
 import { type ReactNode, useState } from 'react'
 
+import { useReveal } from '@/shared/hooks/useReveal'
+
 import { useCatalogStats, useFeaturedListings } from '@/features/listings/hooks'
 import { useCountUp } from '@/shared/hooks/useCountUp'
 import { ListingCard, ListingCardCompact, ListingCardSkeleton } from '@/features/listings/ListingCard'
@@ -425,8 +427,14 @@ function Section({
   action?: ReactNode
   children: ReactNode
 }) {
+  const { ref, visible } = useReveal<HTMLElement>()
+
   return (
-    <section className="mx-auto max-w-7xl px-4 pt-20 lg:px-8">
+    <section
+      ref={ref}
+      data-visible={visible}
+      className="reveal mx-auto max-w-7xl px-4 pt-20 lg:px-8"
+    >
       <div className="mb-7 flex items-end justify-between gap-4">
         <div>
           <p className="text-brand-700 dark:text-brand-300 inline-flex items-center gap-1.5 text-sm font-semibold">

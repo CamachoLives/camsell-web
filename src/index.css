@@ -335,6 +335,18 @@
     animation: rise 0.34s var(--ease-out-soft) both;
     animation-delay: calc(var(--stagger, 0) * 45ms);
   }
+
+  /* Reveal on scroll — controlled by data-visible attribute set via useReveal. */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.55s var(--ease-out-soft), transform 0.55s var(--ease-out-soft);
+  }
+
+  .reveal[data-visible='true'] {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /*
