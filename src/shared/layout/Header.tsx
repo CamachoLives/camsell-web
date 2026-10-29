@@ -177,7 +177,11 @@ export function Header() {
  * sistema, para no enseñar ⌘ en Windows.
  */
 function CommandHint({ onClick }: { onClick: () => void }) {
-  const isApple = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform)
+  const isApple =
+    typeof navigator !== 'undefined' &&
+    (navigator.userAgentData?.platform
+      ? /mac|iphone|ipad/i.test(navigator.userAgentData.platform)
+      : /Mac|iPhone|iPad/.test(navigator.userAgent))
 
   return (
     <button
