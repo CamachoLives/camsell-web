@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { useAuthStore } from '@/features/auth/store'
+import { PasswordStrength } from '@/features/auth/PasswordStrength'
 import { ApiError } from '@/shared/api/client'
 import type { UserRole } from '@/shared/api/types'
 import { Button } from '@/shared/ui/Button'
@@ -116,18 +117,21 @@ export function RegisterPage() {
           />
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <TextField
-              label="Clave"
-              type="password"
-              autoComplete="new-password"
-              required
-              hint="Mínimo 8 caracteres"
-              error={errors.password?.message}
-              {...register('password', {
-                required: 'La clave es obligatoria',
-                minLength: { value: 8, message: 'Usa al menos 8 caracteres' },
-              })}
-            />
+            <div>
+              <TextField
+                label="Clave"
+                type="password"
+                autoComplete="new-password"
+                required
+                hint="Mínimo 8 caracteres"
+                error={errors.password?.message}
+                {...register('password', {
+                  required: 'La clave es obligatoria',
+                  minLength: { value: 8, message: 'Usa al menos 8 caracteres' },
+                })}
+              />
+              <PasswordStrength password={password} />
+            </div>
             <TextField
               label="Repite la clave"
               type="password"
