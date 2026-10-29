@@ -1,5 +1,5 @@
 import { X } from 'lucide-react'
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useId, type ReactNode } from 'react'
 
 import { cn } from '@/shared/lib/cn'
 
@@ -28,6 +28,8 @@ export function Modal({
   footer,
   size = 'md',
 }: ModalProps) {
+  const descriptionId = useId()
+
   // Escape cierra y el scroll de fondo se bloquea mientras el diálogo está abierto.
   useEffect(() => {
     if (!open) {
@@ -64,6 +66,7 @@ export function Modal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
+        aria-describedby={description ? descriptionId : undefined}
         className={cn(
           'bg-surface-raised animate-rise relative flex w-full flex-col',
           'max-h-[92dvh] rounded-t-panel border border-surface shadow-2xl sm:rounded-panel',
@@ -75,7 +78,7 @@ export function Modal({
             <h2 id="modal-title" className="text-lg font-semibold">
               {title}
             </h2>
-            {description ? <p className="text-muted mt-0.5 text-sm">{description}</p> : null}
+            {description ? <p id={descriptionId} className="text-muted mt-0.5 text-sm">{description}</p> : null}
           </div>
           <button
             type="button"
