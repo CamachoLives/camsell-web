@@ -44,3 +44,19 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
     set({ theme })
   },
 }))
+
+// Si el usuario no tiene preferencia guardada, el tema sigue al sistema en tiempo real.
+try {
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+  mediaQuery.addEventListener('change', (event) => {
+    try {
+      if (!localStorage.getItem(STORAGE_KEY)) {
+        useThemeStore.getState().setTheme(event.matches ? 'dark' : 'light')
+      }
+    } catch {
+      useThemeStore.getState().setTheme(event.matches ? 'dark' : 'light')
+    }
+  })
+} catch {
+  // matchMedia no disponible (entorno sin window).
+}
