@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useMemo } from 'react'
 
 import { cn } from '@/shared/lib/cn'
 import { formatNumber } from '@/shared/lib/format'
@@ -19,7 +20,7 @@ export function Pagination({ page, totalPages, totalElements, onChange }: Pagina
     )
   }
 
-  const pages = windowOf(page, totalPages)
+  const pages = useMemo(() => windowOf(page, totalPages), [page, totalPages])
 
   return (
     <nav
