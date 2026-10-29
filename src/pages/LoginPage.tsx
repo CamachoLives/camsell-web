@@ -1,10 +1,11 @@
-import { Eye, EyeOff, LogIn } from 'lucide-react'
+import { Eye, EyeOff, LogIn, Timer } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import { useAuthStore } from '@/features/auth/store'
 import { ApiError } from '@/shared/api/client'
+import { useRateLimitCooldown } from '@/shared/hooks/useRateLimitCooldown'
 import { TextField } from '@/shared/ui/Field'
 import { InlineAlert } from '@/shared/ui/Feedback'
 import { Button } from '@/shared/ui/Button'
@@ -30,6 +31,7 @@ export function LoginPage() {
   const toast = useToast()
   const [showPassword, setShowPassword] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
+  const { remaining, start: startCooldown } = useRateLimitCooldown(30)
 
   const {
     register,
@@ -41,12 +43,17 @@ export function LoginPage() {
   const redirectTo = (location.state as { from?: string } | null)?.from ?? '/cuenta'
 
   async function onSubmit(values: LoginForm) {
+    if (remaining > 0) return
     setFormError(null)
     try {
       const user = await login(values)
       toast.success(`Bienvenido, ${user.fullName.split(' ')[0]}`)
       navigate(redirectTo, { replace: true })
     } catch (error) {
+      const isAuthError =
+        error instanceof ApiError &&
+        (error.status === 401 || error.status === 429 || error.status === 403)
+      if (isAuthError) startCooldown()
       setFormError(
         error instanceof ApiError
           ? error.message
@@ -113,9 +120,10 @@ export function LoginPage() {
             size="lg"
             fullWidth
             loading={isSubmitting}
-            icon={<LogIn className="size-4" />}
+            disabled={remaining > 0}
+            icon={remaining > 0 ? <Timer className="size-4" /> : <LogIn className="size-4" />}
           >
-            Ingresar
+            {remaining > 0 ? `Espera ${remaining}s para intentar de nuevo` : 'Ingresar'}
           </Button>
         </form>
 
