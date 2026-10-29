@@ -263,7 +263,9 @@ export function ListingsPage() {
             </div>
             <footer className="border-t border-surface px-5 py-4">
               <Button fullWidth onClick={() => setPanelOpen(false)}>
-                Ver {formatNumber(data?.totalElements ?? 0)} resultados
+                {isPending
+                  ? 'Buscando…'
+                  : `Ver ${formatNumber(data?.totalElements ?? 0)} resultados`}
               </Button>
             </footer>
           </div>
