@@ -50,6 +50,12 @@ export function ListingCard({
   const href = `/vehiculos/${listing.slug}`
   const isRow = layout === 'row'
 
+  const highlightBadge = listing.featured ? (
+    <Badge onImage icon={<Sparkles className="size-3" aria-hidden />}>Destacado</Badge>
+  ) : isRecentlyPublished(listing.publishedAt) && listing.status === 'PUBLISHED' ? (
+    <Badge onImage tone="success">Nuevo</Badge>
+  ) : null
+
   return (
     <article
       style={{ '--stagger': index } as React.CSSProperties}
@@ -74,15 +80,7 @@ export function ListingCard({
         />
 
         <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5">
-          {listing.featured ? (
-            <Badge onImage icon={<Sparkles className="size-3" aria-hidden />}>
-              Destacado
-            </Badge>
-          ) : isRecentlyPublished(listing.publishedAt) && listing.status === 'PUBLISHED' ? (
-            <Badge onImage tone="success">
-              Nuevo
-            </Badge>
-          ) : null}
+          {highlightBadge}
           {showStatus || listing.status !== 'PUBLISHED' ? (
             <Badge tone={status.tone}>{status.label}</Badge>
           ) : null}
