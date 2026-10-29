@@ -5,10 +5,10 @@ import { FilterPanel } from '@/features/listings/FilterPanel'
 import { useListingSearch } from '@/features/listings/hooks'
 import { ListingCard, ListingCardSkeleton } from '@/features/listings/ListingCard'
 import { useListingFilters } from '@/features/listings/useListingFilters'
-import { useParameterDictionary } from '@/features/parameters/hooks'
+import { useBrands, useParameterDictionary } from '@/features/parameters/hooks'
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue'
 import { cn } from '@/shared/lib/cn'
-import { formatNumber } from '@/shared/lib/format'
+import { formatNumber, formatPriceCompact } from '@/shared/lib/format'
 import { Badge } from '@/shared/ui/Badge'
 import { Button } from '@/shared/ui/Button'
 import { EmptyState, ErrorState } from '@/shared/ui/Feedback'
@@ -303,15 +303,31 @@ function ViewButton({
 /** Resumen de lo que está filtrando, con quitar en un clic. */
 function ActiveChips({ filters }: { filters: ReturnType<typeof useListingFilters> }) {
   const dictionary = useParameterDictionary()
-  const entries = [...filters.attrByGroup.entries()]
+  const { data: brands } = useBrands()
+  const attrEntries = [...filters.attrByGroup.entries()]
+  const { params } = filters
 
-  if (entries.length === 0) {
+  const selectedBrand = brands?.find((b) => b.id === params.brandIds?.[0])
+  const selectedModel = selectedBrand?.models.find((m) => m.id === params.modelIds?.[0])
+
+  const hasAny =
+    attrEntries.length > 0 ||
+    params.minPrice != null ||
+    params.maxPrice != null ||
+    params.maxMileage != null ||
+    params.minYear != null ||
+    params.maxYear != null ||
+    params.brandIds?.length ||
+    params.negotiable
+
+  if (!hasAny) {
     return null
   }
 
   return (
     <div className="mb-5 flex flex-wrap items-center gap-2">
-      {entries.flatMap(([groupCode, values]) =>
+      {/* Chips de atributos dinámicos */}
+      {attrEntries.flatMap(([groupCode, values]) =>
         values.map((value) => (
           <button
             key={`${groupCode}:${value}`}
@@ -328,6 +344,97 @@ function ActiveChips({ filters }: { filters: ReturnType<typeof useListingFilters
           </button>
         )),
       )}
+
+      {/* Chip de marca */}
+      {selectedBrand ? (
+        <button
+          type="button"
+          onClick={() => filters.setBrand(undefined)}
+          className="transition-opacity hover:opacity-75"
+          aria-label={`Quitar filtro ${selectedBrand.name}`}
+        >
+          <Badge tone="brand" className="pr-1.5">
+            <span className="opacity-70">Marca:</span>
+            {selectedBrand.name}
+            {selectedModel ? ` · ${selectedModel.name}` : ''}
+            <X className="ml-0.5 size-3" aria-hidden />
+          </Badge>
+        </button>
+      ) : null}
+
+      {/* Chip de precio */}
+      {(params.minPrice != null || params.maxPrice != null) ? (
+        <button
+          type="button"
+          onClick={() => {
+            filters.setNumber('minPrice', undefined)
+            filters.setNumber('maxPrice', undefined)
+          }}
+          className="transition-opacity hover:opacity-75"
+          aria-label="Quitar filtro de precio"
+        >
+          <Badge tone="brand" className="pr-1.5">
+            <span className="opacity-70">Precio:</span>
+            {params.minPrice != null ? formatPriceCompact(params.minPrice) : '0'}
+            {' → '}
+            {params.maxPrice != null ? formatPriceCompact(params.maxPrice) : '∞'}
+            <X className="ml-0.5 size-3" aria-hidden />
+          </Badge>
+        </button>
+      ) : null}
+
+      {/* Chip de año */}
+      {(params.minYear != null || params.maxYear != null) ? (
+        <button
+          type="button"
+          onClick={() => {
+            filters.setNumber('minYear', undefined)
+            filters.setNumber('maxYear', undefined)
+          }}
+          className="transition-opacity hover:opacity-75"
+          aria-label="Quitar filtro de año"
+        >
+          <Badge tone="brand" className="pr-1.5">
+            <span className="opacity-70">Año:</span>
+            {params.minYear ?? '—'}
+            {' → '}
+            {params.maxYear ?? '—'}
+            <X className="ml-0.5 size-3" aria-hidden />
+          </Badge>
+        </button>
+      ) : null}
+
+      {/* Chip de kilometraje */}
+      {params.maxMileage != null ? (
+        <button
+          type="button"
+          onClick={() => filters.setNumber('maxMileage', undefined)}
+          className="transition-opacity hover:opacity-75"
+          aria-label="Quitar filtro de kilometraje"
+        >
+          <Badge tone="brand" className="pr-1.5">
+            <span className="opacity-70">Hasta:</span>
+            {formatNumber(params.maxMileage)} km
+            <X className="ml-0.5 size-3" aria-hidden />
+          </Badge>
+        </button>
+      ) : null}
+
+      {/* Chip de negociable */}
+      {params.negotiable ? (
+        <button
+          type="button"
+          onClick={() => filters.setNegotiable(false)}
+          className="transition-opacity hover:opacity-75"
+          aria-label="Quitar filtro precio negociable"
+        >
+          <Badge tone="brand" className="pr-1.5">
+            Precio negociable
+            <X className="ml-0.5 size-3" aria-hidden />
+          </Badge>
+        </button>
+      ) : null}
+
       <button
         type="button"
         onClick={filters.reset}
