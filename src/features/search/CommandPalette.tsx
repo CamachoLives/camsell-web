@@ -192,6 +192,12 @@ export function CommandPalette() {
     return [...searchAll, ...listingCommands, ...brandCommands, ...newsCommands, ...matchedNavigation]
   }, [term, listings, news, brands, user, navigate, setOpen])
 
+  // Al escribir, el resultado cambia: volver al inicio evita que el cursor
+  // quede apuntando a un elemento distinto del que el usuario esperaría.
+  useEffect(() => {
+    setActive(0)
+  }, [term])
+
   // Si la lista cambia de tamaño, el índice activo podría quedar fuera de rango.
   useEffect(() => {
     setActive((current) => (current >= commands.length ? 0 : current))
