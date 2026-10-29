@@ -55,6 +55,7 @@ export function ListingDetailPage() {
   const navigate = useNavigate()
   const [offerOpen, setOfferOpen] = useState(false)
   const [refCopied, setRefCopied] = useState(false)
+  const [shareCopied, setShareCopied] = useState(false)
 
   // Register the listing in the recently-viewed list as soon as it loads.
   useEffect(() => {
@@ -120,15 +121,16 @@ export function ListingDetailPage() {
 
   async function onShare() {
     const url = window.location.href
+    const text = `${vehicle.title} — ${formatPrice(vehicle.price, vehicle.currency)} · Camsell`
     try {
-      // La API de compartir nativa solo existe en algunos navegadores; si no
-      // está, se copia el enlace al portapapeles.
-      if (navigator.share) {
-        await navigator.share({ title: vehicle.title, url })
+      if (navigator.share && navigator.canShare?.({ title: vehicle.title, text, url })) {
+        await navigator.share({ title: vehicle.title, text, url })
         return
       }
       await navigator.clipboard.writeText(url)
-      toast.success('Enlace copiado')
+      setShareCopied(true)
+      setTimeout(() => setShareCopied(false), 2500)
+      toast.success('Enlace copiado al portapapeles')
     } catch {
       toast.error('No pudimos compartir el enlace')
     }
@@ -256,8 +258,18 @@ export function ListingDetailPage() {
                 >
                   {listing.favorite ? 'Guardado' : 'Guardar'}
                 </Button>
-                <Button variant="secondary" onClick={onShare} icon={<Share2 className="size-4" />}>
-                  Compartir
+                <Button
+                  variant="secondary"
+                  onClick={onShare}
+                  icon={
+                    shareCopied ? (
+                      <Check className="size-4 text-emerald-500" aria-hidden />
+                    ) : (
+                      <Share2 className="size-4" aria-hidden />
+                    )
+                  }
+                >
+                  {shareCopied ? 'Copiado' : 'Compartir'}
                 </Button>
               </div>
             </div>
