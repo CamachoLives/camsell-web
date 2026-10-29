@@ -2,6 +2,7 @@ import { ArrowUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Outlet, ScrollRestoration, useLocation } from 'react-router-dom'
 
+import { WelcomeModal } from '@/features/onboarding/WelcomeModal'
 import { CommandPalette } from '@/features/search/CommandPalette'
 import { Footer } from '@/shared/layout/Footer'
 import { Header } from '@/shared/layout/Header'
@@ -54,6 +55,7 @@ export function AppShell() {
 
       <Footer />
       <CommandPalette />
+      <WelcomeModal />
       <ToastViewport />
       <ScrollRestoration />
       <ScrollToTopButton />
