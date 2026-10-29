@@ -1,5 +1,5 @@
 import { ImageOff } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { cn } from '@/shared/lib/cn'
 
@@ -35,6 +35,11 @@ export function Image({
   sizes,
 }: ImageProps) {
   const [state, setState] = useState<'loading' | 'ready' | 'failed'>(src ? 'loading' : 'failed')
+
+  // Cuando src cambia (p.ej. al navegar entre fichas) hay que volver a cargar.
+  useEffect(() => {
+    setState(src ? 'loading' : 'failed')
+  }, [src])
 
   if (!src || state === 'failed') {
     return (
