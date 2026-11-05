@@ -151,13 +151,18 @@ export function ListingsPage() {
           <div className="surface-glass sticky top-[4.25rem] z-20 mb-5 flex items-center gap-3 rounded-xl px-3.5 py-2.5">
             <p className="text-muted text-sm">
               {isPending ? (
-                'Buscando…'
+                <span className="flex items-center gap-1.5">
+                  <span className="bg-brand-500 inline-block size-1.5 animate-pulse rounded-full" aria-hidden />
+                  Buscando…
+                </span>
               ) : (
                 <>
-                  <span className="numeric text-strong font-medium">
+                  <span className="numeric text-strong font-semibold">
                     {formatNumber(data?.totalElements ?? 0)}
                   </span>{' '}
-                  {data?.totalElements === 1 ? 'resultado' : 'resultados'}
+                  <span className="hidden sm:inline">
+                    {data?.totalElements === 1 ? 'resultado' : 'resultados'}
+                  </span>
                 </>
               )}
             </p>
@@ -170,7 +175,7 @@ export function ListingsPage() {
                 id="catalog-sort"
                 value={filters.params.sort ?? ''}
                 onChange={(event) => filters.setSort(event.target.value)}
-                className="text-base h-9 cursor-pointer rounded-lg border border-surface bg-surface-raised px-2.5 text-xs"
+                className="text-base focus:border-brand-500 focus:ring-brand-500/20 h-9 cursor-pointer rounded-lg border border-surface bg-surface-raised px-2.5 text-xs transition-colors focus:ring-2"
               >
                 {SORTS.map((option) => (
                   <option key={option.value} value={option.value}>
