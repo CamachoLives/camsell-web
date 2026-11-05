@@ -107,20 +107,22 @@ function Hero({ stats }: { stats?: CatalogStats }) {
             </SmartLink>
           </div>
 
-          <div className="mt-7 flex flex-wrap items-center gap-2">
-            <span className="text-muted mr-1 text-xs font-medium tracking-widest uppercase">
+          <div className="mt-7 flex items-center gap-2">
+            <span className="text-muted mr-1 hidden shrink-0 text-xs font-medium tracking-widest uppercase sm:inline">
               Populares
             </span>
-            {QUICK_FILTERS.map((filter) => (
-              <SmartLink
-                key={filter.label}
-                to={filter.to}
-                prefetchPage="listings"
-                className="surface-flat hover:border-brand-400 hover:text-strong text-muted rounded-full px-3 py-1.5 text-xs font-medium transition-colors"
-              >
-                {filter.label}
-              </SmartLink>
-            ))}
+            <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
+              {QUICK_FILTERS.map((filter) => (
+                <SmartLink
+                  key={filter.label}
+                  to={filter.to}
+                  prefetchPage="listings"
+                  className="surface-flat hover:border-brand-400 hover:text-strong hover:bg-brand-50 dark:hover:bg-brand-950/40 text-muted shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors"
+                >
+                  {filter.label}
+                </SmartLink>
+              ))}
+            </div>
           </div>
         </div>
 
