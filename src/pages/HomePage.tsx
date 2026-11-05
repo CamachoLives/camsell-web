@@ -333,11 +333,13 @@ function ValueBento() {
             icon={<Store className="size-5" aria-hidden />}
             title="Particulares y concesionarios"
             description="En el mismo lugar, con el rol visible para saber con quién negocias."
+            iconVariant="aqua"
           />
           <BentoSmall
             icon={<Handshake className="size-5" aria-hidden />}
             title="Ofertas con reglas claras"
             description="Ofertas, el vendedor acepta o rechaza, y el vehículo queda reservado."
+            iconVariant="accent"
           />
         </div>
       </div>
@@ -349,14 +351,22 @@ function BentoSmall({
   icon,
   title,
   description,
+  iconVariant = 'default',
 }: {
   icon: ReactNode
   title: string
   description: string
+  iconVariant?: 'default' | 'aqua' | 'accent'
 }) {
+  const iconStyles = {
+    default: 'bg-surface-sunken text-muted',
+    aqua: 'bg-aqua-500/10 text-aqua-500',
+    accent: 'bg-accent-400/15 text-accent-500',
+  }
+
   return (
-    <article className="surface-card rounded-panel p-6">
-      <span className="bg-surface-sunken text-muted grid size-10 place-items-center rounded-xl">
+    <article className="surface-card rounded-panel p-6 transition-shadow duration-200 hover:shadow-[var(--shadow-lift)]">
+      <span className={`grid size-10 place-items-center rounded-xl ${iconStyles[iconVariant]}`}>
         {icon}
       </span>
       <h3 className="mt-4 text-base font-semibold">{title}</h3>
