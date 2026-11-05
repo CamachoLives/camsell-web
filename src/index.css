@@ -82,7 +82,7 @@
     --shadow-flat: 0 1px 2px oklch(0 0 0 / 0.3);
     --shadow-card: 0 1px 2px oklch(0 0 0 / 0.34), 0 12px 32px oklch(0 0 0 / 0.38);
     --shadow-lift: 0 2px 6px oklch(0 0 0 / 0.4), 0 22px 52px oklch(0 0 0 / 0.46);
-    --glow-brand: 0 0 0 1px oklch(0.7 0.158 266 / 0.3), 0 10px 34px oklch(0.55 0.2 264 / 0.3);
+    --glow-brand: 0 0 0 1px oklch(0.7 0.158 266 / 0.35), 0 10px 34px oklch(0.55 0.2 264 / 0.4);
 
     --grid-line: oklch(1 0 0 / 0.035);
     color-scheme: dark;
@@ -273,13 +273,18 @@
   .bg-mesh {
     background-image:
       radial-gradient(
-        ellipse 50% 60% at 15% 0%,
-        color-mix(in oklch, var(--color-brand-500) 18%, transparent),
+        ellipse 55% 65% at 10% 0%,
+        color-mix(in oklch, var(--color-brand-500) 24%, transparent),
         transparent
       ),
       radial-gradient(
-        ellipse 40% 50% at 85% 10%,
-        color-mix(in oklch, var(--color-aqua-500) 14%, transparent),
+        ellipse 45% 55% at 90% 8%,
+        color-mix(in oklch, var(--color-aqua-500) 18%, transparent),
+        transparent
+      ),
+      radial-gradient(
+        ellipse 30% 40% at 50% 100%,
+        color-mix(in oklch, var(--color-accent-400) 10%, transparent),
         transparent
       );
   }
