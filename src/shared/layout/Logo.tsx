@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom'
 
 export function Logo({ compact = false }: { compact?: boolean }) {
   return (
-    <Link to="/" className="flex items-center gap-2.5" aria-label="Camsell, ir al inicio">
-      <span className="bg-brand-600 grid size-9 shrink-0 place-items-center rounded-xl shadow-sm">
+    <Link to="/" className="group flex items-center gap-2.5" aria-label="Camsell, ir al inicio">
+      <span className="bg-brand-600 group-hover:glow-brand grid size-9 shrink-0 place-items-center rounded-xl shadow-sm transition-[transform,box-shadow] duration-300 group-hover:scale-105">
         <svg viewBox="0 0 32 32" className="size-6" aria-hidden>
           <path
             d="M7 19.5h18M9.5 19.5v2.2a1 1 0 0 1-1 1H7.8a1 1 0 0 1-1-1v-2.2M25.2 19.5v2.2a1 1 0 0 1-1 1h-.7a1 1 0 0 1-1-1v-2.2"
@@ -25,7 +25,9 @@ export function Logo({ compact = false }: { compact?: boolean }) {
       </span>
       {compact ? null : (
         <span className="flex flex-col leading-none">
-          <span className="text-strong text-lg font-bold tracking-tight">Camsell</span>
+          <span className="text-strong text-lg font-bold tracking-tight transition-colors duration-200 group-hover:text-brand-600 dark:group-hover:text-brand-400">
+            Camsell
+          </span>
           <span className="text-muted text-[0.65rem] font-medium tracking-wide uppercase">
             Compra y venta
           </span>
