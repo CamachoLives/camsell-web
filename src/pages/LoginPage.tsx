@@ -1,4 +1,4 @@
-import { Eye, EyeOff, LogIn, Timer } from 'lucide-react'
+import { Building2, Eye, EyeOff, LogIn, ShoppingBag, Timer, UserCog } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
@@ -17,9 +17,27 @@ interface LoginForm {
 }
 
 const DEMO_ACCOUNTS = [
-  { email: 'admin@camsell.dev', label: 'Administrador', detail: 'Parámetros, marcas y noticias' },
-  { email: 'ventas@autonorte.co', label: 'Concesionario', detail: 'Publicaciones destacadas' },
-  { email: 'carlos.ruiz@mail.com', label: 'Comprador', detail: 'Ofertas y favoritos activos' },
+  {
+    email: 'admin@camsell.dev',
+    label: 'Administrador',
+    detail: 'Parámetros, marcas y noticias',
+    icon: UserCog,
+    color: 'text-red-600 bg-red-50 dark:text-red-300 dark:bg-red-950/60',
+  },
+  {
+    email: 'ventas@autonorte.co',
+    label: 'Concesionario',
+    detail: 'Publicaciones destacadas',
+    icon: Building2,
+    color: 'text-brand-700 bg-brand-50 dark:text-brand-300 dark:bg-brand-950/60',
+  },
+  {
+    email: 'carlos.ruiz@mail.com',
+    label: 'Comprador',
+    detail: 'Ofertas y favoritos activos',
+    icon: ShoppingBag,
+    color: 'text-emerald-700 bg-emerald-50 dark:text-emerald-300 dark:bg-emerald-950/60',
+  },
 ]
 
 const DEMO_PASSWORD = 'Camsell2026*'
@@ -144,19 +162,29 @@ export function LoginPage() {
           </code>
         </p>
         <ul className="mt-4 flex flex-col gap-2">
-          {DEMO_ACCOUNTS.map((account) => (
-            <li key={account.email}>
-              <button
-                type="button"
-                onClick={() => fillDemoAccount(account.email)}
-                className="hover:border-brand-400 hover:bg-surface-sunken w-full rounded-xl border border-surface px-3.5 py-2.5 text-left transition-colors"
-              >
-                <span className="text-strong block text-sm font-medium">{account.label}</span>
-                <span className="text-muted block truncate text-xs">{account.email}</span>
-                <span className="text-muted block text-xs">{account.detail}</span>
-              </button>
-            </li>
-          ))}
+          {DEMO_ACCOUNTS.map((account) => {
+            const Icon = account.icon
+            return (
+              <li key={account.email}>
+                <button
+                  type="button"
+                  onClick={() => fillDemoAccount(account.email)}
+                  className="hover:border-brand-400 hover:bg-surface-sunken group w-full rounded-xl border border-surface px-3.5 py-2.5 text-left transition-colors"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span className={`grid size-8 shrink-0 place-items-center rounded-lg ${account.color}`}>
+                      <Icon className="size-4" aria-hidden />
+                    </span>
+                    <div className="min-w-0">
+                      <span className="text-strong block text-sm font-medium">{account.label}</span>
+                      <span className="text-muted block truncate text-xs">{account.email}</span>
+                    </div>
+                  </div>
+                  <p className="text-muted mt-2 text-xs leading-relaxed">{account.detail}</p>
+                </button>
+              </li>
+            )
+          })}
         </ul>
       </aside>
     </section>
