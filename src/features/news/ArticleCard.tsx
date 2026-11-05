@@ -57,7 +57,11 @@ export function ArticleCard({ article, highlight = false, index = 0 }: ArticleCa
             highlight ? 'text-2xl sm:text-[1.65rem]' : 'text-lg',
           )}
         >
-          <SmartLink to={href} prefetchPage="article" className="hover:underline">
+          <SmartLink
+            to={href}
+            prefetchPage="article"
+            className="decoration-brand-500 underline-offset-2 transition-[text-decoration-color,color] hover:underline"
+          >
             {article.title}
           </SmartLink>
         </h3>
@@ -66,7 +70,7 @@ export function ArticleCard({ article, highlight = false, index = 0 }: ArticleCa
           <p
             className={cn(
               'text-muted mt-2.5 text-sm leading-relaxed',
-              highlight ? '' : 'line-clamp-3',
+              highlight ? 'line-clamp-4' : 'line-clamp-2',
             )}
           >
             {article.excerpt}
@@ -80,7 +84,7 @@ export function ArticleCard({ article, highlight = false, index = 0 }: ArticleCa
                 <SmartLink
                   to={`/noticias?tag=${encodeURIComponent(tag)}`}
                   prefetchPage="news"
-                  className="bg-surface-sunken text-muted hover:text-strong rounded-full px-2.5 py-0.5 text-[0.7rem] transition-colors"
+                  className="bg-surface-sunken text-muted hover:border-brand-300 hover:text-brand-600 dark:hover:text-brand-300 rounded-full border border-transparent px-2.5 py-0.5 text-[0.7rem] transition-colors"
                 >
                   #{tag}
                 </SmartLink>
@@ -91,6 +95,7 @@ export function ArticleCard({ article, highlight = false, index = 0 }: ArticleCa
 
         <div className="text-muted mt-auto flex items-center gap-3 pt-4 text-xs">
           <span className="numeric">{formatDateShort(article.publishedAt)}</span>
+          <span aria-hidden className="text-[0.5rem] opacity-40">●</span>
           <span className="flex items-center gap-1">
             <Clock className="size-3" aria-hidden />
             {formatReadingTime(article.readingMinutes)}
