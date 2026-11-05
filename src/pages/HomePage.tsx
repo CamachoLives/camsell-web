@@ -25,7 +25,7 @@ import { useBrands } from '@/features/parameters/hooks'
 import { usePaletteStore } from '@/features/search/paletteStore'
 import type { CatalogStats } from '@/shared/api/types'
 import { formatNumber } from '@/shared/lib/format'
-import { Badge } from '@/shared/ui/Badge'
+import { Badge, StatusDot } from '@/shared/ui/Badge'
 import { Button } from '@/shared/ui/Button'
 import { SmartLink } from '@/shared/ui/SmartLink'
 
@@ -153,14 +153,17 @@ function Stat({
       ref={ref as React.RefObject<HTMLDivElement>}
       className={
         highlight
-          ? 'surface-edge rounded-card px-4 py-3.5'
-          : 'surface-card rounded-card px-4 py-3.5'
+          ? 'surface-edge rounded-card px-4 py-4'
+          : 'surface-card rounded-card px-4 py-4'
       }
     >
-      <dt className="text-muted text-[0.65rem] font-semibold tracking-widest uppercase">
-        {label}
+      <dt className="flex items-center gap-1.5 text-[0.65rem] font-semibold tracking-widest uppercase">
+        {highlight ? <StatusDot tone="success" /> : null}
+        <span className={highlight ? 'text-brand-700 dark:text-brand-300' : 'text-muted'}>
+          {label}
+        </span>
       </dt>
-      <dd className="numeric text-strong mt-1.5 text-2xl font-semibold">
+      <dd className={`numeric mt-2 font-semibold ${highlight ? 'text-strong text-3xl' : 'text-strong text-2xl'}`}>
         {animated === undefined ? (
           <span className="skeleton block h-7 w-14 rounded-md" />
         ) : (
