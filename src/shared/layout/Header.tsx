@@ -97,7 +97,12 @@ export function Header() {
             onClick={() => setMenuOpen((open) => !open)}
             aria-expanded={menuOpen}
             aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
-            className="text-muted hover:bg-surface-sunken hover:text-strong grid size-9 place-items-center rounded-xl transition-colors md:hidden"
+            className={cn(
+              'grid size-9 place-items-center rounded-xl transition-all duration-200 md:hidden',
+              menuOpen
+                ? 'bg-brand-50 text-brand-700 dark:bg-brand-950 dark:text-brand-300'
+                : 'text-muted hover:bg-surface-sunken hover:text-strong',
+            )}
           >
             {menuOpen ? <X className="size-5" aria-hidden /> : <Menu className="size-5" aria-hidden />}
           </button>
@@ -109,6 +114,8 @@ export function Header() {
           className="bg-surface-raised animate-rise border-t border-surface md:hidden"
           onClick={closeMenuOnLink}
         >
+          {/* Degradado sutil en la parte superior del menú para profundidad */}
+          <div aria-hidden className="bg-mesh h-1 w-full opacity-60" />
           <nav aria-label="Principal móvil" className="mx-auto max-w-7xl px-4 py-3">
             <ul className="flex flex-col gap-1">
               {NAV.map(({ to, label, icon: Icon, prefetchPage }) => (
