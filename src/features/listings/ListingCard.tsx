@@ -163,13 +163,13 @@ export function ListingCard({
             aria-pressed={inCompare}
             onClick={() => (inCompare ? remove(listing.id) : add(listing))}
             className={cn(
-              'mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl border py-1.5 text-xs font-medium transition-colors',
+              'mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl border py-2 text-xs font-medium transition-all duration-200',
               inCompare
-                ? 'border-brand-400 bg-brand-50 text-brand-700 dark:bg-brand-950 dark:text-brand-300'
-                : 'border-surface text-muted hover:border-brand-300 hover:text-brand-600',
+                ? 'border-brand-400 bg-brand-50 text-brand-700 shadow-[0_0_0_3px_theme(colors.brand.400/0.15)] dark:bg-brand-950 dark:text-brand-300'
+                : 'border-surface text-muted hover:border-brand-300 hover:bg-brand-50/50 hover:text-brand-600 dark:hover:bg-brand-950/30',
             )}
           >
-            <BarChart2 className="size-3.5" aria-hidden />
+            <BarChart2 className={cn('size-3.5 transition-transform duration-200', inCompare && 'scale-110')} aria-hidden />
             {inCompare ? 'En comparación' : 'Comparar'}
           </button>
         ) : null}
