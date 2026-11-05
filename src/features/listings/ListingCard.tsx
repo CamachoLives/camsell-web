@@ -78,7 +78,7 @@ export function ListingCard({
       <SmartLink
         to={href}
         prefetchPage="listingDetail"
-        className={cn('relative block shrink-0', isRow ? 'sm:w-64' : '')}
+        className={cn('relative block shrink-0 overflow-hidden', isRow ? 'sm:w-64' : '')}
         aria-label={listing.title}
       >
         <Image
@@ -88,6 +88,12 @@ export function ListingCard({
           aspect={isRow ? 'aspect-[16/10] sm:h-full sm:aspect-auto' : 'aspect-[4/3]'}
           className="transition-transform duration-500 group-hover:scale-[1.04]"
           sizes={isRow ? '256px' : '(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw'}
+        />
+
+        {/* Gradient overlay for readability of image badges */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-neutral-950/50 to-transparent"
         />
 
         <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5">
