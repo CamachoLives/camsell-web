@@ -195,13 +195,13 @@ function CommandHint({ onClick }: { onClick: () => void }) {
       type="button"
       onClick={onClick}
       className={cn(
-        'text-muted hover:text-strong hover:border-surface-strong group flex items-center gap-2',
-        'rounded-xl border border-surface bg-surface-sunken py-2 pr-2 pl-3 text-sm transition-colors',
+        'text-muted hover:text-strong hover:border-brand-300 hover:bg-brand-50/40 dark:hover:bg-brand-950/30 group flex items-center gap-2',
+        'rounded-xl border border-surface bg-surface-sunken py-2 pr-2 pl-3 text-sm transition-all duration-200',
       )}
     >
-      <Search className="size-4" aria-hidden />
+      <Search className="size-4 transition-transform duration-200 group-hover:scale-110" aria-hidden />
       <span className="hidden lg:inline">Buscar</span>
-      <kbd className="hidden rounded-md border border-surface bg-surface-raised px-1.5 py-0.5 font-mono text-[0.65rem] lg:inline">
+      <kbd className="hidden rounded-md border border-surface bg-surface-raised px-1.5 py-0.5 font-mono text-[0.65rem] transition-colors group-hover:border-brand-300/60 lg:inline">
         {isApple ? '⌘' : 'Ctrl'} K
       </kbd>
     </button>
