@@ -80,8 +80,9 @@ export function Footer() {
                     <SmartLink
                       to={link.to}
                       prefetchPage={link.prefetchPage}
-                      className="text-muted hover:text-strong text-sm transition-colors"
+                      className="text-muted hover:text-strong group relative inline-flex items-center gap-1 text-sm transition-colors"
                     >
+                      <span className="bg-brand-500 absolute -left-2 h-3.5 w-0.5 rounded-full opacity-0 transition-opacity group-hover:opacity-100" aria-hidden />
                       {link.label}
                     </SmartLink>
                   </li>
@@ -91,7 +92,13 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="text-muted mt-12 flex flex-col gap-2 border-t border-surface pt-6 text-xs sm:flex-row sm:items-center sm:justify-between">
+        {/* Separador con gradiente de marca */}
+        <div
+          aria-hidden
+          className="mt-12 h-px w-full bg-gradient-to-r from-transparent via-brand-500/30 to-transparent"
+        />
+
+        <div className="text-muted mt-6 flex flex-col gap-2 text-xs sm:flex-row sm:items-center sm:justify-between">
           <p>© {currentYear} Camsell. Proyecto de demostración.</p>
           <div className="flex items-center gap-4">
             <p>Los vehículos y las notas son datos de ejemplo.</p>
@@ -99,7 +106,7 @@ export function Footer() {
               type="button"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               aria-label="Volver al inicio de la página"
-              className="hover:text-strong inline-flex items-center gap-1 transition-colors"
+              className="hover:text-strong inline-flex items-center gap-1.5 rounded-lg border border-transparent px-2 py-1 transition-colors hover:border-surface"
             >
               <ArrowUp className="size-3" aria-hidden />
               Inicio
