@@ -7,6 +7,7 @@ import {
   Gauge,
   Handshake,
   Heart,
+  Lock,
   MapPin,
   Pencil,
   Share2,
@@ -283,23 +284,23 @@ export function ListingDetailPage() {
           </div>
 
           <div className="surface-card mt-4 rounded-panel p-6">
-            <h2 className="text-muted mb-3.5 text-sm font-semibold">Vendedor</h2>
-            <div className="flex items-center gap-3">
-              <span className="bg-brand-600 grid size-11 shrink-0 place-items-center rounded-full text-sm font-semibold text-white">
+            <h2 className="text-muted mb-4 text-xs font-semibold tracking-widest uppercase">Vendedor</h2>
+            <div className="flex items-center gap-3.5">
+              <span className="ring-brand-500/30 bg-brand-600 grid size-12 shrink-0 place-items-center rounded-full text-sm font-semibold text-white ring-2 ring-offset-2 ring-offset-[var(--surface-raised)]">
                 {initials(listing.sellerName)}
               </span>
               <div className="min-w-0">
-                <p className="text-strong truncate font-medium">{listing.sellerName}</p>
-                <p className="text-muted flex items-center gap-1 text-xs">
+                <p className="text-strong truncate font-semibold">{listing.sellerName}</p>
+                <p className="text-muted mt-0.5 flex items-center gap-1 text-xs">
                   <User className="size-3" aria-hidden />
-                  Contacta por medio de una oferta
+                  Particular · Contacta con una oferta
                 </p>
               </div>
             </div>
-            <p className="text-muted mt-4 text-xs">
-              Los datos de contacto se comparten cuando el vendedor acepta tu oferta. Así se evitan
-              el spam y las llamadas sin intención de compra.
-            </p>
+            <div className="text-muted mt-4 flex items-start gap-2 rounded-xl bg-surface-sunken px-3.5 py-3 text-xs leading-relaxed">
+              <Lock className="text-brand-500/70 mt-0.5 size-3 shrink-0" aria-hidden />
+              Los datos se comparten solo cuando aceptan tu oferta, para evitar spam.
+            </div>
           </div>
         </aside>
       </div>
