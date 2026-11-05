@@ -2,6 +2,7 @@ import {
   ArrowRight,
   BadgeCheck,
   Car,
+  ChevronDown,
   Handshake,
   Newspaper,
   Plus,
@@ -256,29 +257,35 @@ function BrandStrip() {
 
   return (
     <section className="mx-auto max-w-7xl px-4 pt-20 lg:px-8">
-      <h2 className="text-muted mb-4 text-xs font-semibold tracking-widest uppercase">
-        Explora por marca
-      </h2>
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-muted text-xs font-semibold tracking-widest uppercase">
+          Explora por marca
+        </h2>
+        {hasMore ? (
+          <button
+            type="button"
+            onClick={() => setExpanded((e) => !e)}
+            className="text-brand-700 dark:text-brand-300 flex items-center gap-1 text-xs font-medium transition-colors hover:underline"
+          >
+            {expanded ? 'Ver menos' : `+${brands.length - BRANDS_VISIBLE} más`}
+            <ChevronDown
+              className={`size-3.5 transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`}
+              aria-hidden
+            />
+          </button>
+        ) : null}
+      </div>
       <div className="flex flex-wrap gap-2">
         {visible.map((brand) => (
           <SmartLink
             key={brand.id}
             to={`/vehiculos?brandId=${brand.id}`}
             prefetchPage="listings"
-            className="surface-flat hover:border-brand-400 hover:text-strong text-base rounded-xl px-4 py-2.5 text-sm font-medium transition-colors"
+            className="surface-flat hover:border-brand-400 hover:text-strong hover:bg-brand-50/50 dark:hover:bg-brand-950/30 text-base rounded-xl px-4 py-2.5 text-sm font-medium transition-colors"
           >
             {brand.name}
           </SmartLink>
         ))}
-        {hasMore ? (
-          <button
-            type="button"
-            onClick={() => setExpanded((e) => !e)}
-            className="surface-flat hover:border-brand-400 hover:text-strong text-muted rounded-xl px-4 py-2.5 text-sm font-medium transition-colors"
-          >
-            {expanded ? 'Ver menos' : `+${brands.length - BRANDS_VISIBLE} más`}
-          </button>
-        ) : null}
       </div>
     </section>
   )
