@@ -1,4 +1,4 @@
-import { UserPlus } from 'lucide-react'
+import { Lightbulb, UserPlus } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
@@ -187,17 +187,25 @@ export function RegisterPage() {
         </p>
       </div>
 
-      <aside className="surface-card mt-4 rounded-panel p-5">
-        <p className="text-muted text-xs leading-relaxed">
-          <span className="text-strong font-medium">¿Solo quieres explorar?</span> Puedes{' '}
-          <Link
-            to="/ingresar"
-            className="text-brand-700 dark:text-brand-300 font-medium hover:underline"
-          >
-            ingresar con una cuenta de demostración
-          </Link>{' '}
-          en la pantalla de acceso. No se requiere correo real.
-        </p>
+      <aside className="surface-flat mt-4 rounded-panel p-5">
+        <div className="flex gap-3">
+          <span className="bg-accent-400/15 text-accent-600 dark:text-accent-300 mt-0.5 grid size-7 shrink-0 place-items-center rounded-lg">
+            <Lightbulb className="size-3.5" aria-hidden />
+          </span>
+          <div>
+            <p className="text-strong text-sm font-medium">¿Solo quieres explorar?</p>
+            <p className="text-muted mt-1 text-xs leading-relaxed">
+              Puedes{' '}
+              <Link
+                to="/ingresar"
+                className="text-brand-700 dark:text-brand-300 font-medium hover:underline"
+              >
+                ingresar con una cuenta de demostración
+              </Link>{' '}
+              en la pantalla de acceso. No se requiere correo real.
+            </p>
+          </div>
+        </div>
       </aside>
     </section>
   )
