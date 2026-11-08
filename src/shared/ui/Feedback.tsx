@@ -89,7 +89,7 @@ export function InlineAlert({
   tone = 'danger',
   children,
 }: {
-  tone?: 'danger' | 'info' | 'success'
+  tone?: 'danger' | 'info' | 'success' | 'warning'
   children: ReactNode
 }) {
   const tones = {
@@ -98,6 +98,8 @@ export function InlineAlert({
     info: 'bg-sky-50 text-sky-800 border-sky-200 dark:bg-sky-950/50 dark:text-sky-300 dark:border-sky-900',
     success:
       'bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-900',
+    warning:
+      'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-900',
   }
 
   return (
