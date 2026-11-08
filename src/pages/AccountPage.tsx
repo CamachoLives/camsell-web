@@ -33,7 +33,7 @@ import { formatPrice, formatRelative } from '@/shared/lib/format'
 import { Badge } from '@/shared/ui/Badge'
 import { Button } from '@/shared/ui/Button'
 import { TextField } from '@/shared/ui/Field'
-import { EmptyState, ErrorState, Skeleton } from '@/shared/ui/Feedback'
+import { EmptyState, ErrorState, InlineAlert, Skeleton } from '@/shared/ui/Feedback'
 import { Pagination } from '@/shared/ui/Pagination'
 import { useToast } from '@/shared/ui/toast'
 
@@ -545,7 +545,7 @@ function ProfileTab() {
       <div className="grid gap-5 lg:grid-cols-2">
       <form onSubmit={saveProfile} className="surface-card flex flex-col gap-4 rounded-panel p-6">
         <h2 className="text-lg font-semibold">Datos personales</h2>
-        {error ? <p className="text-sm text-red-600">{error}</p> : null}
+        {error ? <InlineAlert>{error}</InlineAlert> : null}
 
         <TextField
           label="Nombre completo"
