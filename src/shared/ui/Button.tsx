@@ -3,7 +3,7 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react'
 
 import { cn } from '@/shared/lib/cn'
 
-type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'accent' | 'glass'
+type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'accent' | 'glass' | 'outline'
 type Size = 'sm' | 'md' | 'lg' | 'icon' | 'icon-sm'
 
 const VARIANTS: Record<Variant, string> = {
@@ -20,6 +20,9 @@ const VARIANTS: Record<Variant, string> = {
     'bg-linear-to-b from-accent-400 to-accent-500 text-neutral-950 shadow-sm ' +
     'hover:from-accent-300 hover:to-accent-400',
   glass: 'surface-glass text-strong hover:border-surface-strong',
+  outline:
+    'border border-brand-500 text-brand-600 dark:text-brand-400 ' +
+    'hover:bg-brand-50 dark:hover:bg-brand-950/40 active:bg-brand-100 dark:active:bg-brand-950/60',
 }
 
 const SIZES: Record<Size, string> = {
