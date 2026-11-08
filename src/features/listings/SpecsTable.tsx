@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { useParameterDictionary, useParameterGroups } from '@/features/parameters/hooks'
+import { cn } from '@/shared/lib/cn'
 import type { ListingAttribute, ListingDetail } from '@/shared/api/types'
 import { formatNumber } from '@/shared/lib/format'
 
@@ -55,7 +56,7 @@ export function SpecsTable({ listing }: SpecsTableProps) {
         unidad legible de un vistazo, y en móvil se reordena en una columna sin
         que el valor se separe de su etiqueta.
       */}
-      <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-card border border-surface bg-[var(--surface-border)] sm:grid-cols-3 lg:grid-cols-4">
+      <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-card border border-surface bg-[var(--surface-border)] sm:grid-cols-3 lg:grid-cols-4 [&>div:hover]:bg-surface-sunken">
         <Cell label="Marca" value={listing.brandName} />
         <Cell label="Modelo" value={listing.modelName} />
         <Cell label="Año" value={String(listing.year)} numeric />
@@ -98,19 +99,20 @@ function Cell({
   value: string
   numeric?: boolean
 }) {
+  const display = value && value.trim() ? value : '—'
   return (
-    <div className="bg-surface-raised px-4 py-3.5">
+    <div className="bg-surface-raised px-4 py-3.5 transition-colors">
       <dt className="text-muted text-[0.65rem] font-semibold tracking-widest uppercase">
         {label}
       </dt>
       <dd
-        className={
-          numeric
-            ? 'numeric text-strong mt-1 text-sm font-medium'
-            : 'text-strong mt-1 text-sm font-medium'
-        }
+        className={cn(
+          'mt-1 text-sm font-medium',
+          display === '—' ? 'text-muted' : 'text-strong',
+          numeric && 'numeric',
+        )}
       >
-        {value}
+        {display}
       </dd>
     </div>
   )
