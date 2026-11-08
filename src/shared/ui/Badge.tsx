@@ -26,8 +26,17 @@ const TONES: Record<Tone, string> = {
     'dark:bg-sky-950/60 dark:text-sky-300 dark:border-sky-800',
 }
 
+type Size = 'xs' | 'sm' | 'md'
+
+const SIZES: Record<Size, string> = {
+  xs: 'px-1.5 py-px text-[0.6rem] gap-0.5',
+  sm: 'px-2.5 py-0.5 text-[0.7rem] gap-1',
+  md: 'px-3 py-1 text-xs gap-1.5',
+}
+
 interface BadgeProps {
   tone?: Tone
+  size?: Size
   icon?: ReactNode
   /** Variante translúcida, para colocar la etiqueta sobre una imagen. */
   onImage?: boolean
@@ -35,12 +44,12 @@ interface BadgeProps {
   children: ReactNode
 }
 
-export function Badge({ tone = 'neutral', icon, onImage = false, className, children }: BadgeProps) {
+export function Badge({ tone = 'neutral', size = 'sm', icon, onImage = false, className, children }: BadgeProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5',
-        'text-[0.7rem] font-medium tracking-tight',
+        'inline-flex items-center rounded-full border font-medium tracking-tight',
+        SIZES[size],
         onImage
           ? 'border-white/15 bg-neutral-950/65 text-white backdrop-blur-md'
           : TONES[tone],
