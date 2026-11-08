@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, Expand, ImageOff, X } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { ListingImage } from '@/shared/api/types'
 import { cn } from '@/shared/lib/cn'
@@ -14,11 +14,27 @@ export function ListingGallery({ images, title }: ListingGalleryProps) {
   const [index, setIndex] = useState(0)
   const [zoomed, setZoomed] = useState(false)
   const total = images.length
+  const touchStartX = useRef<number | null>(null)
 
   const go = useCallback(
     (delta: number) => setIndex((value) => (value + delta + total) % total),
     [total],
   )
+
+  function onTouchStart(event: React.TouchEvent) {
+    touchStartX.current = event.touches[0].clientX
+  }
+
+  function onTouchEnd(event: React.TouchEvent) {
+    if (touchStartX.current === null || total <= 1) {
+      return
+    }
+    const delta = touchStartX.current - event.changedTouches[0].clientX
+    if (Math.abs(delta) > 40) {
+      go(delta > 0 ? 1 : -1)
+    }
+    touchStartX.current = null
+  }
 
   // Las flechas recorren la galería y Escape cierra la vista ampliada.
   useEffect(() => {
@@ -68,7 +84,11 @@ export function ListingGallery({ images, title }: ListingGalleryProps) {
   return (
     <>
       <div className="flex flex-col gap-3">
-        <div className="group relative overflow-hidden rounded-panel">
+        <div
+          className="group relative overflow-hidden rounded-panel"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+        >
           <Image
             src={current.url}
             alt={current.alt ?? `${title}, imagen ${index + 1} de ${total}`}
