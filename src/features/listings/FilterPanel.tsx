@@ -5,6 +5,7 @@ import { useBrands, useFilterableGroups } from '@/features/parameters/hooks'
 import type { ParameterGroup } from '@/shared/api/types'
 import { cn } from '@/shared/lib/cn'
 import { formatPriceCompact } from '@/shared/lib/format'
+import { Badge } from '@/shared/ui/Badge'
 import { Button } from '@/shared/ui/Button'
 import { CheckboxField, SelectField, TextField } from '@/shared/ui/Field'
 import { Skeleton } from '@/shared/ui/Feedback'
@@ -29,12 +30,12 @@ export function FilterPanel({ filters }: FilterPanelProps) {
   return (
     <div className="flex flex-col gap-6">
       <header className="flex items-center justify-between gap-2">
-        <h2 className="text-base font-semibold">
+        <h2 className="flex items-center gap-2 text-base font-semibold">
           Filtros
           {filters.activeCount > 0 ? (
-            <span className="bg-brand-600 ml-2 rounded-full px-2 py-0.5 text-xs font-semibold text-white">
+            <Badge tone="brand" size="xs">
               {filters.activeCount}
-            </span>
+            </Badge>
           ) : null}
         </h2>
         {filters.activeCount > 0 ? (
