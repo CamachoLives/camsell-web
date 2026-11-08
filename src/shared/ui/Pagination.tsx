@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react'
 import { useMemo } from 'react'
 
 import { cn } from '@/shared/lib/cn'
@@ -33,6 +33,12 @@ export function Pagination({ page, totalPages, totalElements, onChange }: Pagina
 
       <div className="flex items-center gap-1">
         <PageButton
+          label="Primera página"
+          disabled={page === 0}
+          onClick={() => onChange(0)}
+          icon={<ChevronsLeft className="size-4" aria-hidden />}
+        />
+        <PageButton
           label="Anterior"
           disabled={page === 0}
           onClick={() => onChange(page - 1)}
@@ -65,6 +71,12 @@ export function Pagination({ page, totalPages, totalElements, onChange }: Pagina
           disabled={page >= totalPages - 1}
           onClick={() => onChange(page + 1)}
           icon={<ChevronRight className="size-4" aria-hidden />}
+        />
+        <PageButton
+          label="Última página"
+          disabled={page >= totalPages - 1}
+          onClick={() => onChange(totalPages - 1)}
+          icon={<ChevronsRight className="size-4" aria-hidden />}
         />
       </div>
     </nav>
